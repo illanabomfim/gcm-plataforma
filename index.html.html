@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCM Salvador — Plataforma de Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1f3d;--navy2:#122b52;--navy3:#1a3a6e;
+  --gold:#d4af37;--gold2:#f0d060;--gold3:#fff8e1;
+  --bg:#f0f2f5;--surface:#ffffff;--surface2:#f7f8fa;
+  --border:#e2e5ea;--border2:#ccd0d8;
+  --text:#1a1d23;--text2:#4a5060;--text3:#8892a0;
+  --green:#1a7a40;--green-bg:#e6f5ed;
+  --red:#c0392b;--red-bg:#fdf0ee;
+  --blue:#1a5cb0;--blue-bg:#e8f0fb;
+  --radius:10px;--radius-lg:14px;--radius-xl:20px;
+  --shadow:0 2px 8px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT — scroll na body, não no main
+═══════════════════════════════════════════════ */
+.app{display:block;max-width:1000px;margin:0 auto}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+.header{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 50%,var(--navy3) 100%);
+  padding:0;overflow:hidden;position:relative
+}
+.header-geo{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(45deg,transparent 40%,rgba(212,175,55,.06) 40%,rgba(212,175,55,.06) 60%,transparent 60%),
+    linear-gradient(-45deg,transparent 40%,rgba(212,175,55,.04) 40%,rgba(212,175,55,.04) 60%,transparent 60%)
+}
+.header-main{display:flex;align-items:center;gap:16px;padding:18px 24px 12px;position:relative;z-index:1}
+.logo{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(212,175,55,.5);
+  display:flex;align-items:center;justify-content:center;font-size:26px
+}
+.header-info{flex:1}
+.header-info .org{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+.header-info h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:.5px;line-height:1.1}
+.header-info .sub{font-size:11px;color:var(--gold);margin-top:3px;font-weight:600;letter-spacing:.3px}
+.xp-badge{
+  background:rgba(212,175,55,.15);border:1.5px solid rgba(212,175,55,.4);
+  color:var(--gold);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;
+  white-space:nowrap;flex-shrink:0
+}
+.header-motto{
+  padding:8px 24px 10px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:12px;color:rgba(255,255,255,.65);font-style:italic;
+  position:relative;z-index:1;display:flex;gap:8px;align-items:flex-start
+}
+.header-motto::before{content:'⚔️';font-style:normal;font-size:13px;flex-shrink:0;margin-top:1px}
+.header-stats{
+  display:flex;align-items:center;gap:0;position:relative;z-index:1;
+  border-top:1px solid rgba(255,255,255,.07)
+}
+.stat{
+  flex:1;padding:8px 12px;display:flex;flex-direction:column;align-items:center;gap:1px;
+  border-right:1px solid rgba(255,255,255,.07)
+}
+.stat:last-child{border-right:none}
+.stat-val{font-size:16px;font-weight:700;color:var(--gold)}
+.stat-lbl{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px}
+.prog-stat{flex:3;padding:8px 16px;border-right:none}
+.prog-track{background:rgba(255,255,255,.1);border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:width .6s ease}
+.prog-info{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-top:3px}
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+.nav{
+  display:flex;background:var(--surface);
+  border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  overflow-x:auto;
+}
+.nb{
+  flex:1;min-width:70px;padding:0 4px;height:52px;border:none;background:transparent;
+  font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;cursor:pointer;
+  color:var(--text3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .18s;
+  text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;
+  position:relative;z-index:101;-webkit-tap-highlight-color:rgba(0,0,0,.1);
+  user-select:none;-webkit-user-select:none;touch-action:manipulation;
+}
+.nb .ni{font-size:17px;font-style:normal}
+.nb:hover{color:var(--navy);background:var(--surface2)}
+.nb.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════ */
+.main{padding:20px;overflow-y:visible}
+.section{display:none;animation:fadeUp .22s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════ */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;
+  box-shadow:var(--shadow)
+}
+.card-hdr{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-hdr small{font-size:11px;font-weight:500;color:var(--text3);margin-left:auto}
+.card-accent{border-left:4px solid var(--gold)}
+
+/* ═══════════════════════════════════════════════
+   INÍCIO — STATS GRID
+═══════════════════════════════════════════════ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:16px 12px;text-align:center;box-shadow:var(--shadow)
+}
+.stat-card .sv{font-size:26px;font-weight:700;color:var(--navy);line-height:1}
+.stat-card .sl{font-size:10px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+
+.ach-grid{display:flex;gap:8px;flex-wrap:wrap}
+.ach{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:20px;font-size:12px;font-weight:600;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text3);
+  transition:all .2s
+}
+.ach.unlock{background:var(--gold3);border-color:var(--gold);color:#7d5200}
+.ach .al{font-size:15px}
+
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.info-box{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  border-radius:var(--radius-lg);padding:14px;text-align:center;color:white
+}
+.info-box .iv{font-size:24px;font-weight:700;color:var(--gold)}
+.info-box .il{font-size:10px;color:rgba(255,255,255,.55);margin-top:3px;text-transform:uppercase;letter-spacing:.3px}
+
+.highlight-box{
+  background:var(--gold3);border:1.5px solid var(--gold);border-radius:var(--radius-lg);
+  padding:14px 16px;font-size:13px;line-height:1.7;color:#5a4000
+}
+.how-step{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6
+}
+.how-step:last-child{border-bottom:none}
+.step-num{
+  background:var(--navy);color:var(--gold);border-radius:50%;
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px
+}
+
+/* ═══════════════════════════════════════════════
+   A PROVA
+═══════════════════════════════════════════════ */
+.modulo-card{
+  background:linear-gradient(135deg,var(--navy),var(--navy3));
+  color:white;border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:12px;
+  box-shadow:var(--shadow-lg)
+}
+.mod-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.mod-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px}
+.mod-tags{display:flex;gap:6px;flex-wrap:wrap}
+.mod-tag{
+  font-size:11px;padding:4px 10px;border-radius:20px;
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-weight:500
+}
+.mod-tag.gold{background:rgba(212,175,55,.25);color:var(--gold);border:1px solid rgba(212,175,55,.3)}
+
+.rule-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--border);font-size:13px
+}
+.rule-row:last-child{border-bottom:none}
+.rule-icon{font-size:16px;flex-shrink:0}
+
+.taf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.taf-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
+.taf-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.taf-table{width:100%;border-collapse:collapse}
+.taf-table th{background:var(--navy);color:white;padding:5px 8px;text-align:center;font-size:11px}
+.taf-table td{padding:5px 8px;text-align:center;font-size:12px;border-bottom:1px solid var(--border)}
+.taf-table tr:last-child td{border-bottom:none}
+
+.analysis-row{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6}
+.analysis-row:last-child{border-bottom:none}
+.analysis-row strong{color:var(--navy)}
+
+/* ═══════════════════════════════════════════════
+   MATÉRIAS
+═══════════════════════════════════════════════ */
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.mat-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px;cursor:pointer;
+  transition:all .2s;text-align:center;position:relative;
+  box-shadow:var(--shadow);
+  touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08);
+  user-select:none;-webkit-user-select:none;
+}
+.mat-card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.mat-icon{font-size:28px;margin-bottom:8px;display:block}
+.mat-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.mat-badge-mod{
+  font-size:10px;padding:2px 8px;border-radius:10px;
+  background:var(--blue-bg);color:var(--blue);font-weight:600;display:inline-block;margin-bottom:6px
+}
+.mat-prog-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:8px}
+.mat-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
+.mat-meta{font-size:10px;color:var(--text3);margin-top:4px}
+.mat-done{
+  position:absolute;top:8px;right:8px;
+  background:var(--green-bg);color:var(--green);
+  font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px
+}
+
+.topicos-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.topicos-hdr{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:white;padding:14px 20px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700
+}
+.topicos-list{padding:0 20px 8px}
+.topico-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:11px 0;border-bottom:1px solid var(--border)
+}
+.topico-row:last-child{border-bottom:none}
+.chk{
+  width:22px;height:22px;border:2px solid var(--border2);border-radius:50%;flex-shrink:0;
+  margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;transition:all .15s
+}
+.chk.done{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.topico-info{flex:1}
+.topico-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.4}
+.topico-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.tag-a{background:#fdecea;color:#c0392b}
+.tag-m{background:#fef5e7;color:#b45309}
+.tag-b{background:var(--green-bg);color:var(--green)}
+.btn-estudar{
+  font-size:11px;padding:4px 10px;
+  border:1.5px solid var(--navy);border-radius:8px;
+  background:transparent;cursor:pointer;color:var(--navy);
+  font-family:'Barlow',sans-serif;font-weight:600;margin-top:5px;
+  transition:all .15s
+}
+.btn-estudar:hover{background:var(--navy);color:white}
+
+/* ═══════════════════════════════════════════════
+   MODAL — OPAQUE, FIXED
+═══════════════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(10,31,61,.75);
+  align-items:center;justify-content:center;padding:16px
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:#ffffff !important;
+  border-radius:var(--radius-xl);
+  max-width:660px;width:100%;
+  max-height:88vh;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 24px 64px rgba(0,0,0,.4)
+}
+.modal-hdr{
+  background:linear-gradient(135deg,var(--navy),var(--navy3));
+  padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0
+}
+.modal-hdr h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:white}
+.modal-close{
+  background:rgba(255,255,255,.15);border:none;color:white;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.modal-close:hover{background:rgba(255,255,255,.3)}
+.modal-body{
+  padding:20px;overflow-y:auto;background:#ffffff !important;flex:1
+}
+.real-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-bg);color:var(--green);
+  font-size:11px;font-weight:700;padding:4px 12px;
+  border-radius:20px;margin-bottom:16px
+}
+.cb{margin-bottom:20px}
+.cb h3{
+  font-size:14px;font-weight:700;color:var(--navy);
+  margin-bottom:8px;padding-left:10px;
+  border-left:4px solid var(--gold);line-height:1.4
+}
+.cb p{font-size:13px;line-height:1.75;color:var(--text);margin-bottom:8px}
+.cb ul{margin:.5rem 0 .5rem 1.2rem}
+.cb ul li{font-size:13px;line-height:1.9;color:var(--text)}
+.ex-box{
+  background:var(--blue-bg);border-left:4px solid var(--blue);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:12px 14px;font-size:13px;line-height:1.75;margin:.5rem 0;color:var(--text)
+}
+.ex-box strong{color:var(--blue);display:block;margin-bottom:4px}
+.dica-box{
+  background:var(--gold3);border-left:4px solid var(--gold);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:12px 14px;font-size:13px;line-height:1.7;margin:.5rem 0;color:#5a4000
+}
+.dica-box strong{display:block;margin-bottom:2px}
+
+/* ═══════════════════════════════════════════════
+   QUESTÕES REAIS
+═══════════════════════════════════════════════ */
+.q-meta{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap
+}
+.q-fonte-badge{
+  font-size:10px;padding:3px 10px;border-radius:10px;
+  background:var(--navy);color:var(--gold);font-weight:700
+}
+.q-enunciado{
+  background:var(--surface2);border:1px solid var(--border);
+  border-left:4px solid var(--navy);border-radius:0 var(--radius) var(--radius) 0;
+  padding:14px 16px;font-size:14px;line-height:1.8;margin-bottom:12px;color:var(--text)
+}
+.alt{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 14px;border:1.5px solid var(--border);
+  border-radius:var(--radius);margin-bottom:6px;cursor:pointer;
+  font-size:13px;line-height:1.5;background:var(--surface);
+  transition:all .15s;color:var(--text);
+  touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08);
+  user-select:none;-webkit-user-select:none;
+}
+.alt:hover{border-color:var(--navy);background:var(--blue-bg)}
+.alt.correta{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.alt.errada{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.alt-l{font-weight:700;width:20px;flex-shrink:0;color:var(--navy);margin-top:1px}
+.alt.correta .alt-l,.alt.errada .alt-l{color:inherit}
+.fb{
+  display:none;padding:14px 16px;border-radius:var(--radius);
+  font-size:13px;line-height:1.7;margin-top:10px
+}
+.fb.show{display:block}
+.fb.ok{background:var(--green-bg);border:1px solid var(--green);color:var(--green)}
+.fb.err{background:var(--red-bg);border:1px solid var(--red);color:var(--red)}
+.fb strong{display:block;margin-bottom:4px}
+.q-footer{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.q-score{display:flex;gap:8px;margin-left:auto}
+.score-pill{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.sp-ok{background:var(--green-bg);color:var(--green)}
+.sp-err{background:var(--red-bg);color:var(--red)}
+
+/* ═══════════════════════════════════════════════
+   AGENTE IA — GERADOR DE QUESTÕES
+═══════════════════════════════════════════════ */
+.agent-panel{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;
+  color:white
+}
+.agent-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.agent-sub{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px}
+.agent-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.field-group{display:flex;flex-direction:column;gap:4px}
+.field-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.4px}
+select.agent-sel,select.agent-sel2{
+  padding:10px 12px;border-radius:var(--radius);
+  border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.1);color:white;
+  font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;cursor:pointer
+}
+select.agent-sel option,select.agent-sel2 option{background:var(--navy);color:white}
+.btn-gerar{
+  padding:10px 20px;border-radius:var(--radius);
+  background:var(--gold);border:none;color:var(--navy);
+  font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+  white-space:nowrap;transition:all .15s
+}
+.btn-gerar:hover{background:var(--gold2)}
+.btn-gerar:disabled{opacity:.5;cursor:not-allowed}
+
+.generated-q{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;
+  box-shadow:var(--shadow)
+}
+.generated-q .gq-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;
+  background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:700;
+  padding:4px 12px;border-radius:20px
+}
+.gq-enunciado{
+  font-size:14px;line-height:1.8;color:var(--text);
+  background:var(--surface2);border-left:4px solid var(--gold);
+  padding:14px 16px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:12px
+}
+.resp-area{
+  width:100%;min-height:90px;
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:12px;font-size:13px;font-family:'Barlow',sans-serif;
+  line-height:1.7;resize:vertical;color:var(--text);background:var(--surface);
+  margin-bottom:10px;transition:border-color .15s
+}
+.resp-area:focus{outline:none;border-color:var(--navy)}
+.resp-area::placeholder{color:var(--text3)}
+
+.corr-result{
+  display:none;border-radius:var(--radius-lg);overflow:hidden;margin-top:12px
+}
+.corr-result.show{display:block}
+.corr-nota{
+  padding:14px 18px;font-size:14px;font-weight:700;
+  display:flex;align-items:center;gap:10px
+}
+.corr-nota.acerto{background:var(--green-bg);color:var(--green)}
+.corr-nota.parcial{background:#fff3e0;color:#e65100}
+.corr-nota.erro{background:var(--red-bg);color:var(--red)}
+.corr-body{
+  background:var(--surface);border:1px solid var(--border);
+  border-top:none;padding:14px 18px
+}
+.corr-section{margin-bottom:10px}
+.corr-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:4px}
+.corr-section p{font-size:13px;line-height:1.7;color:var(--text)}
+.material-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.mat-sugestao{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;background:var(--blue-bg);
+  border-radius:var(--radius);font-size:12px;font-weight:600;color:var(--blue)
+}
+
+.loading-state{
+  text-align:center;padding:32px;color:var(--text3)
+}
+.loading-dots{display:inline-flex;gap:5px;align-items:center;margin-top:8px}
+.loading-dots span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gold);animation:bop 1.2s infinite
+}
+.loading-dots span:nth-child(2){animation-delay:.2s}
+.loading-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+
+/* ═══════════════════════════════════════════════
+   REDAÇÃO
+═══════════════════════════════════════════════ */
+.tema-card{
+  background:linear-gradient(135deg,var(--navy),var(--navy3));
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;color:white;
+  box-shadow:var(--shadow-lg)
+}
+.tema-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.tema-titulo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1.3;margin-bottom:6px}
+.tema-tipo{font-size:11px;color:var(--gold);font-weight:600}
+.wc-counter{font-size:11px;text-align:right;margin-bottom:8px;color:var(--text3);font-weight:600}
+.wc-counter.ok{color:var(--green)}.wc-counter.warn{color:#e67e22}
+textarea.red-area{
+  width:100%;min-height:200px;border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px;font-size:14px;
+  font-family:'Barlow',sans-serif;line-height:1.8;resize:vertical;
+  color:var(--text);background:var(--surface);margin-bottom:10px
+}
+textarea.red-area:focus{outline:none;border-color:var(--navy)}
+
+.estrutura-grid{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:13px;align-items:start}
+.estr-label{font-weight:700;color:var(--navy);padding-top:2px;white-space:nowrap}
+.estr-desc{color:var(--text2);line-height:1.6;padding:2px 0;border-bottom:1px solid var(--border)}
+
+.nota-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.nota-box{background:var(--surface2);border-radius:var(--radius);padding:10px;text-align:center;border:1px solid var(--border)}
+.nota-v{font-size:22px;font-weight:700}
+.nota-l{font-size:10px;color:var(--text3);margin-top:2px}
+.corr-texto{
+  font-size:13px;line-height:1.8;background:var(--surface2);
+  border-radius:var(--radius-lg);padding:16px;white-space:pre-wrap;color:var(--text)
+}
+
+/* ═══════════════════════════════════════════════
+   PLANO DE ESTUDOS — CRONOGRAMA
+═══════════════════════════════════════════════ */
+.semana-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);margin-bottom:12px;
+  overflow:hidden;box-shadow:var(--shadow)
+}
+.semana-hdr{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 18px;cursor:pointer;
+  background:var(--surface);transition:background .15s
+}
+.semana-hdr:hover{background:var(--surface2)}
+.semana-hdr.current{background:linear-gradient(135deg,var(--navy),var(--navy2));color:white}
+.semana-num{
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
+  background:var(--navy);color:var(--gold);padding:3px 10px;border-radius:20px;white-space:nowrap
+}
+.semana-hdr.current .semana-num{background:rgba(255,255,255,.15);color:var(--gold)}
+.semana-datas{font-size:11px;color:var(--text3);font-weight:600}
+.semana-hdr.current .semana-datas{color:rgba(255,255,255,.6)}
+.semana-title{font-size:14px;font-weight:700;flex:1}
+.semana-hdr.current .semana-title{color:white}
+.semana-prog-mini{
+  font-size:10px;padding:2px 8px;border-radius:10px;
+  font-weight:700;white-space:nowrap
+}
+.hoje-badge{background:var(--gold3);color:#7d5200}
+.semana-chevron{font-size:12px;color:var(--text3);transition:transform .2s}
+.semana-chevron.open{transform:rotate(180deg)}
+.semana-hdr.current .semana-chevron{color:rgba(255,255,255,.5)}
+
+.semana-body{display:none;padding:0 18px 14px;background:var(--surface)}
+.semana-body.open{display:block}
+.dia-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border)
+}
+.dia-row:last-child{border-bottom:none}
+.dia-nome{
+  font-size:11px;font-weight:700;color:var(--text3);
+  min-width:56px;padding-top:3px;text-transform:uppercase;letter-spacing:.3px
+}
+.dia-nome.hoje-dia{color:var(--gold);background:var(--gold3);padding:2px 6px;border-radius:6px}
+.dia-pill{
+  font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;
+  white-space:nowrap;flex-shrink:0
+}
+.dp1{background:#e3f2fd;color:#1565c0}.dp2{background:#f3e5f5;color:#6a1b9a}
+.dp3{background:#fff3e0;color:#e65100}.dp4{background:var(--green-bg);color:var(--green)}
+.dp5{background:var(--gold3);color:#7d5200}.dp6{background:var(--blue-bg);color:var(--blue)}
+.dia-text{font-size:13px;color:var(--text2);flex:1;line-height:1.5}
+.dia-horas{font-size:10px;color:var(--text3);white-space:nowrap;padding-top:3px}
+
+/* ═══════════════════════════════════════════════
+   BOTÕES GLOBAIS
+═══════════════════════════════════════════════ */
+.btn-primary{
+  background:var(--navy);color:white;border:none;
+  padding:10px 20px;border-radius:var(--radius);
+  font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:rgba(0,0,0,.2);
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;
+}
+.btn-primary:hover{background:var(--navy2);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{
+  background:var(--surface);color:var(--text);
+  border:1.5px solid var(--border2);padding:10px 20px;
+  border-radius:var(--radius);font-family:'Barlow',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:rgba(0,0,0,.1);
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;
+}
+.btn-secondary:hover{background:var(--surface2)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.tab-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{
+  padding:6px 14px;border:1.5px solid var(--border2);
+  background:var(--surface);border-radius:20px;font-size:12px;font-weight:700;
+  cursor:pointer;color:var(--text3);font-family:'Barlow',sans-serif;transition:all .15s;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  -webkit-tap-highlight-color:rgba(0,0,0,.1);
+}
+.tab:hover{background:var(--surface2);color:var(--navy)}
+.tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.err-box{
+  background:var(--red-bg);border:1px solid var(--red);color:var(--red);
+  padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;display:none
+}
+.fase-card{
+  background:var(--surface2);border-radius:var(--radius-lg);padding:14px 16px;
+  margin-bottom:10px;border-left:4px solid var(--gold)
+}
+.fase-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.fase-desc{font-size:13px;line-height:1.7;color:var(--text2)}
+
+/* ── API KEY BANNER ── */
+.apikey-banner{
+  background:linear-gradient(135deg,#1a3a6e,#0a1f3d);
+  border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:16px;
+  border:1.5px solid rgba(212,175,55,.3)
+}
+.apikey-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:white;margin-bottom:6px}
+.apikey-banner p{font-size:12px;color:rgba(255,255,255,.65);margin-bottom:12px;line-height:1.6}
+.apikey-row{display:flex;gap:8px;align-items:center}
+.apikey-input{
+  flex:1;padding:10px 14px;border-radius:var(--radius);
+  border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:white;
+  font-family:'Barlow',sans-serif;font-size:13px;
+}
+.apikey-input::placeholder{color:rgba(255,255,255,.35)}
+.apikey-input:focus{outline:none;border-color:var(--gold)}
+.btn-save-key{
+  padding:10px 18px;border-radius:var(--radius);background:var(--gold);
+  border:none;color:var(--navy);font-family:'Barlow',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s
+}
+.btn-save-key:hover{background:var(--gold2)}
+.key-status{
+  font-size:11px;font-weight:700;margin-top:8px;padding:4px 0;
+  display:flex;align-items:center;gap:6px
+}
+.key-status.ok{color:#7fe09a}
+.key-status.missing{color:rgba(255,255,255,.45)}
+.how-to-key{
+  margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.2);
+  border-radius:var(--radius);font-size:11px;color:rgba(255,255,255,.55);line-height:1.7
+}
+.how-to-key strong{color:rgba(255,255,255,.8)}
+
+/* ── TUTOR IA ── */
+.tutor-panel{
+  background:linear-gradient(135deg,#1a3a6e,#0a2250);
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:16px
+}
+.tutor-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:white;margin-bottom:4px}
+.tutor-sub{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:14px}
+.tutor-input-row{display:flex;gap:8px}
+.tutor-input{
+  flex:1;padding:12px 16px;border-radius:var(--radius);
+  border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:white;
+  font-family:'Barlow',sans-serif;font-size:14px;
+}
+.tutor-input::placeholder{color:rgba(255,255,255,.4)}
+.tutor-input:focus{outline:none;border-color:var(--gold)}
+.btn-tutor{
+  padding:12px 20px;border-radius:var(--radius);background:var(--gold);
+  border:none;color:var(--navy);font-family:'Barlow',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s
+}
+.btn-tutor:hover{background:var(--gold2)}
+.btn-tutor:disabled{opacity:.5;cursor:not-allowed}
+.tutor-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tutor-chip{
+  font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.15);transition:all .15s;font-weight:600
+}
+.tutor-chip:hover{background:rgba(212,175,55,.25);border-color:var(--gold);color:var(--gold)}
+
+.tutor-result{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-lg);margin-bottom:16px;display:none
+}
+.tutor-result.show{display:block}
+.tutor-result-hdr{
+  background:linear-gradient(135deg,var(--navy),var(--navy3));
+  padding:14px 20px;
+}
+.tutor-result-hdr h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:white;margin-bottom:2px}
+.tutor-result-hdr p{font-size:11px;color:rgba(255,255,255,.5)}
+.tutor-result-body{padding:20px;background:#ffffff}
+.tutor-section{margin-bottom:20px}
+.tutor-section-title{
+  font-size:13px;font-weight:700;color:var(--navy);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;
+  padding-bottom:6px;border-bottom:2px solid var(--gold)
+}
+.tutor-text{font-size:13px;line-height:1.8;color:var(--text)}
+.tutor-exercise{
+  background:var(--blue-bg);border-left:4px solid var(--blue);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:12px 16px;margin-bottom:10px
+}
+.tutor-exercise .ex-num{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.tutor-exercise .ex-q{font-size:13px;line-height:1.7;color:var(--text)}
+.tutor-youtube{
+  background:var(--red-bg);border-left:4px solid #e74c3c;
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:12px 16px;margin-bottom:8px;font-size:13px;line-height:1.6
+}
+.tutor-youtube strong{color:#c0392b;display:block;margin-bottom:2px}
+.tutor-yt-tip{font-size:12px;color:#922b21}
+
+/* ── REDAÇÃO EXEMPLO ── */
+.exemplo-redacao{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px;margin-bottom:16px
+}
+.exemplo-redacao-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;cursor:pointer
+}
+.exemplo-redacao-hdr h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;
+  font-weight:700;color:var(--navy)
+}
+.exemplo-toggle{
+  font-size:11px;font-weight:700;padding:5px 12px;
+  border-radius:20px;background:var(--navy);color:var(--gold);border:none;
+  cursor:pointer;font-family:'Barlow',sans-serif
+}
+.exemplo-body{display:none}
+.exemplo-body.open{display:block}
+.nota-oficial{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-bg);color:var(--green);
+  font-size:11px;font-weight:700;padding:4px 12px;
+  border-radius:20px;margin-bottom:12px
+}
+.paragrafos-redacao .paragrafo{margin-bottom:14px}
+.paragrafos-redacao .para-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--gold);margin-bottom:4px
+}
+.paragrafos-redacao .para-text{
+  font-size:13px;line-height:1.85;color:var(--text);
+  background:var(--surface);border-left:3px solid var(--border2);
+  padding:12px 14px;border-radius:0 var(--radius) var(--radius) 0
+}
+.comentario-banca{
+  background:var(--gold3);border:1px solid rgba(212,175,55,.4);
+  border-radius:var(--radius);padding:10px 14px;
+  font-size:12px;line-height:1.6;color:#5a4000;margin-top:8px
+}
+.comentario-banca strong{display:block;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="header">
+  <div class="header-geo"></div>
+  <div class="header-main">
+    <div class="logo">🛡️</div>
+    <div class="header-info">
+      <div class="org">Prefeitura Municipal do Salvador · FGV · Nível Médio</div>
+      <h1>Guarda Civil Municipal</h1>
+      <div class="sub">Plataforma Oficial de Preparação · Concurso 2026</div>
+    </div>
+    <div class="xp-badge">⭐ <span id="xp-v">0</span> XP</div>
+  </div>
+  <div class="header-motto">
+    "A disciplina é a ponte entre o objetivo e a realização. Cada questão estudada hoje é um passo a mais em direção ao escudo que você vai usar amanhã."
+  </div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-val" id="hs-top">0</div><div class="stat-lbl">Tópicos</div></div>
+    <div class="stat"><div class="stat-val" id="hs-q">0</div><div class="stat-lbl">Questões</div></div>
+    <div class="stat"><div class="stat-val" id="hs-ac">0%</div><div class="stat-lbl">Acertos</div></div>
+    <div class="stat prog-stat">
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.4);margin-bottom:2px"><span>PROGRESSO GERAL</span><span id="prog-pct">0%</span></div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ NAV ═══════ -->
+<nav class="nav">
+  <button class="nb active" data-section="inicio"><span class="ni">🏠</span>Início</button>
+  <button class="nb" data-section="prova"><span class="ni">📋</span>A Prova</button>
+  <button class="nb" data-section="materias"><span class="ni">📚</span>Matérias</button>
+  <button class="nb" data-section="questoes"><span class="ni">✅</span>Questões</button>
+  <button class="nb" data-section="agente"><span class="ni">🤖</span>IA Questões</button>
+  <button class="nb" data-section="tutor"><span class="ni">🎓</span>Tutor IA</button>
+  <button class="nb" data-section="redacao"><span class="ni">✏️</span>Redação</button>
+  <button class="nb" data-section="plano"><span class="ni">📅</span>Plano</button>
+</nav>
+
+<!-- ═══════ MAIN ═══════ -->
+<main class="main">
+
+<!-- ──── INÍCIO ──── -->
+<div id="inicio" class="section active">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="sv" id="p-top">0</div><div class="sl">Tópicos estudados</div></div>
+    <div class="stat-card"><div class="sv" id="p-q">0</div><div class="sl">Questões feitas</div></div>
+    <div class="stat-card"><div class="sv" id="p-ac">0%</div><div class="sl">Taxa de acerto</div></div>
+    <div class="stat-card"><div class="sv" id="p-red">0</div><div class="sl">Redações</div></div>
+  </div>
+  <div class="card card-accent">
+    <div class="card-hdr">🏆 Conquistas</div>
+    <div class="ach-grid">
+      <div class="ach" id="ach1"><span class="al">🌱</span> Primeiro passo <span style="font-size:10px;opacity:.6;margin-left:4px">(1 tópico)</span></div>
+      <div class="ach" id="ach2"><span class="al">📖</span> Estudioso <span style="font-size:10px;opacity:.6;margin-left:4px">(10 tópicos)</span></div>
+      <div class="ach" id="ach3"><span class="al">✅</span> Praticante <span style="font-size:10px;opacity:.6;margin-left:4px">(5 questões)</span></div>
+      <div class="ach" id="ach4"><span class="al">✏️</span> Redator <span style="font-size:10px;opacity:.6;margin-left:4px">(1 redação)</span></div>
+      <div class="ach" id="ach5"><span class="al">🎯</span> Atirador <span style="font-size:10px;opacity:.6;margin-left:4px">(70% acertos)</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">📊 O concurso em números</div>
+    <div class="info-grid">
+      <div class="info-box"><div class="iv">70</div><div class="il">Questões objetivas</div></div>
+      <div class="info-box"><div class="iv">4h</div><div class="il">Duração da prova</div></div>
+      <div class="info-box"><div class="iv">NM</div><div class="il">Escolaridade exigida</div></div>
+      <div class="info-box"><div class="iv">FGV</div><div class="il">Banca provável</div></div>
+    </div>
+    <div class="highlight-box" style="margin-top:14px">
+      <strong>✅ Confirmado:</strong> O prefeito Bruno Reis anunciou novo concurso para a GCM em 2026 como parte do Plano Municipal de Segurança Pública. A estrutura segue o modelo de 2019 (FGV): prova objetiva + TAF + psicológico + curso de formação. Edital ainda sem data publicada.
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">🚀 Como usar esta plataforma</div>
+    <div class="how-step"><span class="step-num">1</span><span>Acesse <strong>A Prova</strong> — veja a estrutura exata, módulos, distribuição de questões e o TAF</span></div>
+    <div class="how-step"><span class="step-num">2</span><span>Estude em <strong>Matérias</strong> — conteúdo explicativo com questões reais da prova 2019 (FGV)</span></div>
+    <div class="how-step"><span class="step-num">3</span><span>Pratique em <strong>Questões</strong> — 15 questões reais da prova de 2019, com gabarito comentado</span></div>
+    <div class="how-step"><span class="step-num">4</span><span>Use <strong>IA Questões</strong> — a IA cria questões novas, corrige sua resposta e indica o que estudar</span></div>
+    <div class="how-step"><span class="step-num">5</span><span>Treine <strong>Redação</strong> com correção automática por IA em 5 critérios + nota geral</span></div>
+    <div class="how-step"><span class="step-num">6</span><span>Siga o <strong>Plano</strong> semanal — cronograma detalhado de 23/03/2026 até o edital sair</span></div>
+  </div>
+</div>
+
+<!-- ──── A PROVA ──── -->
+<div id="prova" class="section">
+  <div class="modulo-card">
+    <div class="mod-label">Módulo I · Questões 1 a 40</div>
+    <div class="mod-title">Conhecimentos Gerais</div>
+    <div class="mod-tags">
+      <span class="mod-tag">📝 Língua Portuguesa · 14 questões</span>
+      <span class="mod-tag">🧩 Raciocínio Lógico · 10 questões</span>
+      <span class="mod-tag">💻 Informática · 8 questões</span>
+      <span class="mod-tag">⚖️ Legislação Institucional · 8 questões</span>
+      <span class="mod-tag gold">Mínimo para aprovação: 20 acertos</span>
+    </div>
+  </div>
+  <div class="modulo-card">
+    <div class="mod-label">Módulo II · Questões 41 a 70</div>
+    <div class="mod-title">Conhecimentos Específicos</div>
+    <div class="mod-tags">
+      <span class="mod-tag">🛡️ Dir. Administrativo · ~8q</span>
+      <span class="mod-tag">📜 Dir. Constitucional · ~5q</span>
+      <span class="mod-tag">⚖️ Dir. Penal / CTB · ~10q</span>
+      <span class="mod-tag">🏛️ Lei 13.022/14 e Lei 9.070/16 · ~7q</span>
+      <span class="mod-tag">📘 Código Civil · ~5q</span>
+      <span class="mod-tag gold">Mínimo para aprovação: 15 acertos</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">📏 Regras de aprovação na prova objetiva</div>
+    <div class="rule-row"><span class="rule-icon">✅</span><span>Mínimo de <strong>20 questões no Módulo I</strong> (Conhecimentos Gerais)</span></div>
+    <div class="rule-row"><span class="rule-icon">✅</span><span>Mínimo de <strong>15 questões no Módulo II</strong> (Conhecimentos Específicos)</span></div>
+    <div class="rule-row"><span class="rule-icon">✅</span><span>Mínimo de <strong>35 questões no total</strong> (50% de acertos)</span></div>
+    <div class="rule-row"><span class="rule-icon">⏱️</span><span><strong>4 horas</strong> de prova · Pode sair após 3h (sem o caderno) ou em 30min do final (com o caderno)</span></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">🏃 Teste de Aptidão Física (TAF)</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Caráter eliminatório e classificatório. Realizado após aprovação na prova objetiva.</p>
+    <div class="taf-grid">
+      <div class="taf-card"><div class="taf-title">💪 Barra fixa — Homens</div><table class="taf-table"><tr><th>Faixa etária</th><th>Mínimo</th></tr><tr><td>18–27 anos</td><td>8 rep.</td></tr><tr><td>28–35 anos</td><td>6 rep.</td></tr><tr><td>36+ anos</td><td>4 rep.</td></tr></table></div>
+      <div class="taf-card"><div class="taf-title">🏃 Corrida 2.400m</div><table class="taf-table"><tr><th>Gênero</th><th>Tempo máx.</th></tr><tr><td>Homens</td><td>12min 00s</td></tr><tr><td>Mulheres</td><td>14min 00s</td></tr></table></div>
+      <div class="taf-card"><div class="taf-title">🤸 Abdominal — 1 minuto</div><table class="taf-table"><tr><th>Gênero</th><th>Mínimo</th></tr><tr><td>Homens</td><td>35 rep.</td></tr><tr><td>Mulheres</td><td>27 rep.</td></tr></table></div>
+      <div class="taf-card"><div class="taf-title">💪 Flexão — Mulheres</div><table class="taf-table"><tr><th>Faixa etária</th><th>Mínimo</th></tr><tr><td>18–27 anos</td><td>24 rep.</td></tr><tr><td>28–35 anos</td><td>20 rep.</td></tr><tr><td>36+ anos</td><td>16 rep.</td></tr></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">🔍 O que mais caiu na prova 2019 (análise real)</div>
+    <div class="analysis-row"><strong>Língua Portuguesa:</strong> manchetes do jornal A Tarde, uso do "se" (apassivador/índice), relações lógicas entre orações, tipos de argumento, linguagem denotativa vs conotativa</div>
+    <div class="analysis-row"><strong>Raciocínio Lógico:</strong> problemas de idades, conjuntos (Venn), sequências de letras (SALVADORBAHIA), ordenação lógica em filas, negação de proposições, regra de três</div>
+    <div class="analysis-row"><strong>Informática:</strong> Windows 10 BR (idioma/teclado, imagem do sistema), Excel 2016 (fórmulas, F9), Word 2016 (Pincel de Formatação, estilos), unidades de armazenamento (KB/MB/GB)</div>
+    <div class="analysis-row"><strong>Legislação Institucional:</strong> LC 1/1999 (recondução, substituição, sanções), Lei Orgânica de Salvador (imunidade de vereadores, veto do prefeito, eleição da Mesa)</div>
+    <div class="analysis-row"><strong>Conhecimentos Específicos:</strong> Poder de polícia, bens públicos (uso especial), Lei 13.022/2014, crimes (furto mediante fraude, peculato, lesão corporal grave), CTB, Mandado de Segurança</div>
+  </div>
+</div>
+
+<!-- ──── MATÉRIAS ──── -->
+<div id="materias" class="section">
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;font-weight:500">Clique em uma matéria para ver os tópicos. Tópicos com <strong>📚 Conteúdo</strong> têm explicação completa com questões reais da prova 2019.</p>
+  <div class="mat-grid" id="mat-grid"></div>
+  <div id="topicos-wrap" style="display:none">
+    <div class="topicos-panel">
+      <div class="topicos-hdr" id="topicos-hdr">Tópicos</div>
+      <div class="topicos-list" id="topicos-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONTEÚDO -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h2 id="modal-title">Conteúdo</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ──── QUESTÕES REAIS ──── -->
+<div id="questoes" class="section">
+  <div class="card">
+    <div class="card-hdr">✅ Simulado — Questões reais da prova GCM Salvador 2019 <small>Banca FGV</small></div>
+    <div class="tab-bar" id="q-filtro">
+      <span class="tab active" onclick="filtrarQ(this,'todas')">Todas</span>
+      <span class="tab" onclick="filtrarQ(this,'port')">Português</span>
+      <span class="tab" onclick="filtrarQ(this,'log')">Lógica</span>
+      <span class="tab" onclick="filtrarQ(this,'info')">Informática</span>
+      <span class="tab" onclick="filtrarQ(this,'legis')">Legislação</span>
+      <span class="tab" onclick="filtrarQ(this,'esp')">Específicos</span>
+    </div>
+    <div id="q-wrap"></div>
+    <div class="q-footer">
+      <button class="btn-primary" onclick="proxQ()">Próxima questão →</button>
+      <div class="q-score">
+        <span class="score-pill sp-ok">✓ <span id="q-ac">0</span></span>
+        <span class="score-pill sp-err">✗ <span id="q-er">0</span></span>
+        <span style="font-size:12px;color:var(--text3);padding-top:4px">Questão <span id="q-num">1</span>/<span id="q-tot">15</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── AGENTE IA ──── -->
+<div id="agente" class="section">
+
+  <!-- API KEY SETUP -->
+  <div class="apikey-banner">
+    <h3>🔑 Chave da API Anthropic</h3>
+    <p>Para usar as funcionalidades de IA (gerador de questões, tutor e correção de redação), você precisa de uma chave da API da Anthropic. A chave fica salva só no seu navegador — não é enviada para nenhum servidor externo além da própria Anthropic.</p>
+    <div class="apikey-row">
+      <input class="apikey-input" type="password" id="apikey-input" placeholder="sk-ant-api03-..." autocomplete="off">
+      <button class="btn-save-key" onclick="salvarApiKey()">💾 Salvar chave</button>
+    </div>
+    <div class="key-status missing" id="key-status">⚠️ Nenhuma chave configurada</div>
+    <div class="how-to-key">
+      <strong>Como obter sua chave gratuitamente:</strong><br>
+      1. Acesse <strong>console.anthropic.com</strong> e crie uma conta gratuita<br>
+      2. Clique em <strong>"API Keys"</strong> no menu lateral → <strong>"Create Key"</strong><br>
+      3. Copie a chave (começa com <strong>sk-ant-</strong>) e cole acima<br>
+      4. O plano gratuito ($5 de crédito) é mais que suficiente para meses de estudo
+    </div>
+  </div>
+
+  <div class="agent-panel">
+    <div class="agent-title">🤖 Agente Criador de Questões</div>
+    <div class="agent-sub">A IA cria questões no estilo FGV, corrige sua resposta com explicação detalhada e indica o que você precisa revisar.</div>
+    <div class="agent-controls">
+      <div class="field-group">
+        <div class="field-label">Matéria</div>
+        <select class="agent-sel" id="ag-mat">
+          <option value="Língua Portuguesa">📝 Língua Portuguesa</option>
+          <option value="Raciocínio Lógico">🧩 Raciocínio Lógico</option>
+          <option value="Informática (Windows/Excel/Word)">💻 Informática</option>
+          <option value="Legislação Institucional (LC 1/1999, Lei Orgânica de Salvador)">⚖️ Legislação Institucional</option>
+          <option value="Direito Administrativo (poder de polícia, bens públicos, atos adm.)">🛡️ Direito Administrativo</option>
+          <option value="Direito Penal (furto, peculato, lesão corporal, crimes em geral)">⚖️ Direito Penal</option>
+          <option value="CTB e Crimes de Trânsito">🚦 CTB e Trânsito</option>
+          <option value="Lei 13.022/2014 (Estatuto Geral das Guardas Municipais)">🏛️ Lei 13.022/2014</option>
+          <option value="Direito Constitucional (CF/88, art. 5º, remédios constitucionais)">📜 Direito Constitucional</option>
+          <option value="Código Civil (bens, capacidade, comoriência)">📘 Código Civil</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Dificuldade</div>
+        <select class="agent-sel2" id="ag-dif">
+          <option value="fácil">🟢 Fácil</option>
+          <option value="médio" selected>🟡 Médio (concurso NM)</option>
+          <option value="difícil">🔴 Difícil</option>
+        </select>
+      </div>
+      <button class="btn-gerar" id="btn-gerar" onclick="gerarQuestao()">⚡ Gerar questão</button>
+    </div>
+  </div>
+
+  <div id="ag-loading" style="display:none">
+    <div class="loading-state">
+      <div style="font-size:14px;font-weight:700;color:var(--navy)">Criando questão no estilo FGV...</div>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div id="ag-questao-wrap" style="display:none">
+    <div class="generated-q">
+      <div class="gq-badge">🤖 Questão IA · <span id="ag-materia-badge"></span> · <span id="ag-dif-badge"></span></div>
+      <div class="gq-enunciado" id="ag-enunciado"></div>
+      <div id="ag-alts-wrap"></div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">✍️ Justifique sua resposta (opcional — a IA avalia seu raciocínio):</div>
+        <textarea class="resp-area" id="ag-resp" placeholder="Explique por que escolheu aquela alternativa. Quanto mais você escrever, mais detalhada será a correção. Pode escrever em texto livre mesmo."></textarea>
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-corr-ag" onclick="corrigirAgente()">📝 Corrigir minha resposta</button>
+          <button class="btn-secondary" onclick="gerarQuestao()">🔄 Nova questão</button>
+        </div>
+      </div>
+    </div>
+    <div class="corr-result" id="ag-resultado">
+      <div class="corr-nota" id="ag-nota-bar"></div>
+      <div class="corr-body">
+        <div class="corr-section"><div class="corr-section-title">📋 Gabarito e explicação completa</div><p id="ag-gabarito"></p></div>
+        <div class="corr-section"><div class="corr-section-title">📊 Análise da sua resposta</div><p id="ag-avaliacao"></p></div>
+        <div class="corr-section"><div class="corr-section-title">📚 O que estudar para não errar mais</div><div class="material-list" id="ag-material"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ag-erro" class="err-box"></div>
+</div>
+
+<!-- ──── TUTOR IA ──── -->
+<div id="tutor" class="section">
+  <div class="tutor-panel">
+    <div class="tutor-title">🎓 Tutor de Conteúdo com IA</div>
+    <div class="tutor-sub">Digite qualquer tópico do edital. A IA explica do zero, dá exemplos, cria exercícios e indica onde buscar videoaulas.</div>
+    <div class="tutor-input-row">
+      <input class="tutor-input" id="tutor-input" type="text" placeholder="Ex: poder de polícia, concordância verbal, regra de três..." onkeydown="if(event.key==='Enter')consultarTutor()">
+      <button class="btn-tutor" id="btn-tutor" onclick="consultarTutor()">🔍 Estudar este tópico</button>
+    </div>
+    <div class="tutor-chips">
+      <span class="tutor-chip" onclick="setTutorTopic('Interpretação de texto estilo FGV')">📝 Interpretação de texto</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Conjuntos e diagrama de Venn')">🧩 Diagrama de Venn</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Negação de proposições lógicas')">💡 Negação lógica</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Poder de polícia e atos administrativos')">🛡️ Poder de polícia</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Furto mediante fraude vs estelionato')">⚖️ Furto vs estelionato</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Lei 13.022/2014 competências da GCM')">🏛️ Lei 13.022</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Excel 2016 fórmulas básicas e atalhos')">💻 Excel fórmulas</span>
+      <span class="tutor-chip" onclick="setTutorTopic('Lesão corporal leve grave e gravíssima diferenças')">🏥 Lesão corporal</span>
+    </div>
+  </div>
+
+  <div id="tutor-loading" style="display:none">
+    <div class="loading-state">
+      <div style="font-size:14px;font-weight:700;color:var(--navy)">Preparando seu plano de estudo personalizado...</div>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div class="tutor-result" id="tutor-result">
+    <div class="tutor-result-hdr">
+      <h3 id="tutor-result-title">Tópico</h3>
+      <p id="tutor-result-sub"></p>
+    </div>
+    <div class="tutor-result-body" id="tutor-result-body"></div>
+  </div>
+
+  <div id="tutor-erro" class="err-box"></div>
+</div>
+
+<!-- ──── REDAÇÃO ──── -->
+<div id="redacao" class="section">
+  <div class="tema-card">
+    <div class="tema-lbl">Tema da redação</div>
+    <div class="tema-titulo" id="tema-txt">O papel da Guarda Civil Municipal na segurança comunitária de Salvador</div>
+    <div class="tema-tipo">Texto dissertativo-argumentativo · Mínimo 20 linhas · Estilo FGV</div>
+  </div>
+
+  <!-- MODELO NOTA MÁXIMA -->
+  <div class="exemplo-redacao">
+    <div class="exemplo-redacao-hdr" onclick="toggleExemplo()">
+      <h3>📄 Redação modelo — nota máxima (estilo FGV)</h3>
+      <button class="exemplo-toggle" id="btn-toggle-ex">Ver modelo ▼</button>
+    </div>
+    <div class="exemplo-body" id="exemplo-body">
+      <div class="nota-oficial">✅ Baseada em redações nota 10 avaliadas pela banca FGV em concursos de segurança pública</div>
+      <div style="background:var(--gold3);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:12px;color:#5a4000;line-height:1.7">
+        <strong>📌 Por que esta redação tira nota máxima:</strong> Ela tem tese clara na introdução, dois argumentos com exemplos concretos e dados de lei, conclusão com proposta objetiva, conectivos variados e linguagem formal sem ser rebuscada. A FGV valoriza clareza, coerência e proposta prática — não vocabulário sofisticado.
+      </div>
+
+      <div class="paragrafos-redacao">
+        <div class="paragrafo">
+          <div class="para-label">§1 — Introdução (apresenta o tema e a tese)</div>
+          <div class="para-text">A segurança pública é um direito fundamental garantido pela Constituição Federal de 1988 e, para que esse direito seja efetivado no âmbito municipal, a atuação da Guarda Civil Municipal (GCM) revela-se essencial. Em um contexto no qual as grandes cidades brasileiras enfrentam desafios crescentes relacionados à violência urbana, ao vandalismo e à degradação dos espaços públicos, a presença ostensiva e preventiva dos guardas civis municipais tem se mostrado determinante para a promoção de um ambiente mais seguro e digno para toda a comunidade. Assim, o fortalecimento e a valorização dessa instituição são medidas indispensáveis para garantir segurança e qualidade de vida à população de Salvador.</div>
+          <div class="comentario-banca"><strong>💬 Por que funciona:</strong> Apresenta o contexto (violência urbana), cita a base legal (CF/88), e termina com a tese clara. Nada desnecessário. 5 linhas — ideal.</div>
+        </div>
+        <div class="paragrafo">
+          <div class="para-label">§2 — Desenvolvimento 1 (1º argumento + exemplo com lei)</div>
+          <div class="para-text">Um dos principais papéis da Guarda Civil Municipal é a proteção do patrimônio público e dos equipamentos municipais, como escolas, postos de saúde e praças. Conforme prevê o artigo 5º da Lei Federal nº 13.022/2014, que instituiu o Estatuto Geral das Guardas Municipais, compete às GCMs proteger os bens, serviços e instalações do município, além de colaborar com a prevenção de infrações penais e administrativas. Em Salvador, por exemplo, a presença sistemática de guardas civis nas unidades de saúde e espaços de lazer reduz ocorrências de vandalismo e amplia a sensação de segurança entre os usuários desses equipamentos, o que contribui diretamente para o exercício pleno da cidadania.</div>
+          <div class="comentario-banca"><strong>💬 Por que funciona:</strong> Cita artigo específico da lei do edital (13.022/2014), traz exemplo concreto de Salvador, e conecta o argumento ao tema (cidadania). Demonstra conhecimento técnico.</div>
+        </div>
+        <div class="paragrafo">
+          <div class="para-label">§3 — Desenvolvimento 2 (2º argumento + dado/contra-argumento)</div>
+          <div class="para-text">Além da proteção patrimonial, a Guarda Civil Municipal desempenha papel fundamental na construção de uma segurança comunitária baseada na proximidade e no diálogo. O modelo de policiamento comunitário, adotado por diversas guardas municipais brasileiras, pressupõe que o agente de segurança conheça as particularidades do território em que atua, estabelecendo relações de confiança com moradores e comerciantes. Embora haja quem argumente que a GCM possui atribuições restritas em comparação às polícias estaduais, a realidade demonstra que sua atuação preventiva e sua proximidade com a comunidade são complementares às demais forças de segurança, tornando-a um elo indispensável entre o poder público municipal e o cidadão.</div>
+          <div class="comentario-banca"><strong>💬 Por que funciona:</strong> Apresenta o segundo argumento (policiamento comunitário), reconhece o contra-argumento ("GCM tem atribuições restritas") e o rebate com inteligência. Isso demonstra maturidade argumentativa.</div>
+        </div>
+        <div class="paragrafo">
+          <div class="para-label">§4 — Conclusão (retoma tese + proposta concreta)</div>
+          <div class="para-text">Diante do exposto, evidencia-se que a Guarda Civil Municipal é peça-chave para a segurança comunitária em Salvador, tanto pela proteção do patrimônio público quanto pela sua capacidade de aproximar o Estado do cidadão. Para que essa instituição cumpra plenamente seu papel, é necessário que o poder público municipal invista em formação continuada dos guardas, com ênfase em direitos humanos e mediação de conflitos, e amplie os convênios com órgãos de segurança estaduais e federais, promovendo uma atuação integrada e eficaz. Somente por meio do reconhecimento e do fortalecimento da GCM será possível construir uma Salvador mais segura, justa e cidadã.</div>
+          <div class="comentario-banca"><strong>💬 Por que funciona:</strong> Retoma a tese sem copiá-la, apresenta duas propostas concretas (formação + convênios), e fecha com frase de impacto. Não abre novos argumentos. Perfeito para concurso.</div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:16px;margin-top:6px">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">📐 Elementos que garantiram nota máxima nesta redação:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;line-height:1.6;color:var(--text2)">
+          <div>✅ Tese clara na última linha da introdução</div>
+          <div>✅ Citação de lei específica do edital (13.022)</div>
+          <div>✅ Exemplo concreto de Salvador</div>
+          <div>✅ Reconhecimento e refutação de contra-argumento</div>
+          <div>✅ Proposta concreta e viável na conclusão</div>
+          <div>✅ Conectivos variados (além disso, embora, diante do exposto)</div>
+          <div>✅ Linguagem formal sem erros gramaticais</div>
+          <div>✅ Paragrafação correta (4 parágrafos equilibrados)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">💡 Estrutura e conectivos para usar na sua redação</div>
+    <div class="estrutura-grid">
+      <div class="estr-label">Introdução</div>
+      <div class="estr-desc">Apresente o tema e declare sua tese. Termine o § com a tese. 1 parágrafo de 4–5 linhas. <em>Não comece com "Desde os primórdios..." ou "Ao longo da história..."</em></div>
+      <div class="estr-label">Desenv. 1</div>
+      <div class="estr-desc">1º argumento + exemplo concreto. Cite a Lei 13.022/2014 ou situação real de Salvador. Conectivos: <em>Primeiramente, Um dos principais, Conforme prevê o art. X da Lei...</em></div>
+      <div class="estr-label">Desenv. 2</div>
+      <div class="estr-desc">2º argumento + contra-argumento respondido OU dado estatístico. Conectivos: <em>Além disso, Em segundo lugar, Embora haja quem defenda..., a realidade mostra que...</em></div>
+      <div class="estr-label">Conclusão</div>
+      <div class="estr-desc">Retome a tese + proposta concreta e viável. Conectivos: <em>Diante do exposto, Portanto, Conclui-se que... Para que isso se concretize, é necessário que...</em></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">✏️ Escreva sua redação</div>
+    <div class="wc-counter" id="wc">0 palavras — mínimo recomendado: 150</div>
+    <textarea class="red-area" id="red-input" placeholder="Escreva aqui. Não se preocupe com a perfeição — a IA vai corrigir e te ajudar a melhorar." oninput="contarPalavras()"></textarea>
+    <div class="err-box" id="red-err"></div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-corr-red" onclick="corrigirRed()">🤖 Corrigir com IA</button>
+      <button class="btn-secondary" onclick="novoTema()">🎲 Novo tema</button>
+      <button class="btn-secondary" onclick="limparRed()">🗑️ Limpar</button>
+    </div>
+  </div>
+  <div class="card" id="res-red" style="display:none">
+    <div class="card-hdr">📊 Resultado da correção</div>
+    <div class="nota-grid" id="nota-grid-red"></div>
+    <div class="corr-texto" id="corr-texto-red"></div>
+  </div>
+</div>
+
+<!-- ──── PLANO ──── -->
+<div id="plano" class="section">
+  <div class="card">
+    <div class="card-hdr">🗺️ Estratégia em 3 fases</div>
+    <div class="fase-card"><div class="fase-title">📗 Fase 1 — Semanas 1 a 4 (23/03 a 19/04)</div><div class="fase-desc">Língua Portuguesa + Raciocínio Lógico. São 24 questões juntas — é aqui que você ganha ou perde a prova. Foco em interpretação de texto, conjuntos e sequências.</div></div>
+    <div class="fase-card"><div class="fase-title">📘 Fase 2 — Semanas 5 a 8 (20/04 a 17/05)</div><div class="fase-desc">Legislação Institucional + Conhecimentos Específicos (Lei 13.022/2014, Direito Penal, CTB). Leia os textos das leis em voz alta — ajuda a fixar.</div></div>
+    <div class="fase-card"><div class="fase-title">📙 Fase 3 — Semanas 9+ (18/05 em diante)</div><div class="fase-desc">Informática + Simulados completos semanais + Redações com correção IA. Refaça todas as questões que errou. Comece o TAF agora se ainda não começou.</div></div>
+    <div class="highlight-box" style="margin-top:4px">🏃 <strong>TAF:</strong> Comece corrida + abdominal desde a semana 1. 3x por semana. Quem deixa para o último mês não chega lá.
+    </div>
+  </div>
+  <div id="semanas-wrap"></div>
+</div>
+
+</main>
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+// DADOS
+// ══════════════════════════════════════════════════════════
+const MATERIAS=[
+{id:'port',nome:'Língua Portuguesa',icon:'📝',q:14,mod:'I',topicos:[
+  {t:'Interpretação de textos (manchetes e notícias)',imp:'alto',conteudo:{titulo:'Interpretação de textos',blocos:[
+    {h:'O que a FGV cobra',p:'Na prova de 2019 (questões 1–14), a FGV usou manchetes reais do jornal A Tarde e trechos de blogs. O foco é sempre: qual é a ideia central? O que o autor defende? Qual o sentido de uma palavra no contexto?'},
+    {h:'Estratégia para não errar',lista:['Leia o texto uma vez completo, sem pressa','Leia a pergunta com atenção — identifique o que está sendo perguntado','Volte ao texto e encontre onde está a resposta','NUNCA responda de memória — a resposta está sempre no texto']},
+    {h:'Armadilha mais comum',p:'A FGV coloca alternativas verdadeiras no mundo real, mas que o texto NÃO afirma. A resposta certa deve estar no texto.',dica:'Antes de marcar, pergunte: "O texto fala isso?" Se a resposta for não, não marque.'},
+    {h:'Questão real da prova 2019 (Q.2)',exemplo:'A manchete dizia: "Comida desperdiçada na América Latina reduziria 37% da fome do mundo". A FGV perguntou sobre o sentido de "reduziria". A resposta correta (E) era: indica uma possibilidade, não uma certeza — porque "reduziria" está no futuro do pretérito (condicional), que indica hipótese, não fato consumado.'}
+  ]}},
+  {t:'Uso do "se" apassivador e índice de indeterminação',imp:'alto',conteudo:{titulo:'Pronome "se" — funções',blocos:[
+    {h:'Duas funções principais do "se"',lista:['SE apassivador: o sujeito sofre a ação. Verbo concorda com o objeto da frase original. Exemplo: "Vendem-se casas" (casas são vendidas — verbo no plural)','SE índice de indeterminação: quando não há sujeito identificável. Verbo fica no singular. Exemplo: "Precisa-se de funcionários"']},
+    {h:'Questão real da prova 2019 (Q.1)',p:'A FGV pediu a reescritura com "se" INCORRETA gramaticalmente.',exemplo:'Alternativa incorreta: "Todos cometem as mesmas falhas → Comete-se as mesmas falhas". ERRADO! Com "se" apassivador, o verbo deve concordar com o sujeito paciente ("as mesmas falhas" = plural → "Cometem-se as mesmas falhas").',dica:'Quando o "se" é apassivador, o verbo concorda com o substantivo que vem depois. Se esse substantivo for plural, o verbo também vai para o plural.'}
+  ]}},
+  {t:'Relações lógicas entre orações (causa, condição, concessão)',imp:'alto',conteudo:{titulo:'Relações lógicas',blocos:[
+    {h:'As relações mais cobradas pela FGV',lista:['CAUSA e CONSEQUÊNCIA: "porque", "pois", "portanto", "logo", "por isso", "em virtude de", "em razão de"','CONCESSÃO (ideia contrária): "apesar de", "embora", "mesmo que", "ainda que", "conquanto"','CONDIÇÃO: "se", "caso", "desde que", "contanto que"','PROPORCIONALIDADE: "à medida que", "quanto mais...mais"','COMPARAÇÃO: "como", "assim como", "tal qual"']},
+    {h:'Questão real da prova 2019 (Q.5)',p:'A FGV perguntou sobre a relação entre: "Quando se tem uma visão mais ampla, se tem também mais material para formar as próprias ideias."',exemplo:'A resposta correta (E) era CONDIÇÃO — "quando" aqui não indica tempo, mas condição: se/desde que você tenha uma visão ampla, então terá mais material. O contexto determina a relação lógica, não apenas a conjunção.',dica:'Não se deixe enganar pela conjunção isolada. Pense no significado lógico da relação entre as ideias das duas orações.'}
+  ]}},
+  {t:'Argumentação e tipos de argumento',imp:'alto',conteudo:{titulo:'Tipos de argumento',blocos:[
+    {h:'Questão real da prova 2019 (Q.12)',exemplo:'Texto: "A redução da maioridade penal é urgente, pois 98% da população apoia". A FGV perguntou o tipo de argumento.\nResposta correta (A): AUTORITÁRIO — usa a opinião da maioria como prova, sem apresentar razões lógicas ou científicas.'},
+    {h:'Principais tipos cobrados',lista:['AUTORITÁRIO: usa a opinião de uma autoridade ou da maioria para validar','CAUSAL: apresenta causa e consequência lógica','EXEMPLIFICATIVO: usa exemplos concretos para provar','POR DADOS: usa números e estatísticas','NARRATIVO: conta uma história para ilustrar']},
+    {dica:'A FGV gosta de pedir argumentos em textos de opinião. Identifique: com qual recurso o autor está tentando convencer o leitor?'}
+  ]}},
+  {t:'Concordância verbal e nominal',imp:'alto'},
+  {t:'Figuras de linguagem — linguagem denotativa vs conotativa',imp:'medio'},
+  {t:'Pontuação — vírgula, ponto e vírgula, dois-pontos',imp:'medio'},
+]},
+{id:'log',nome:'Raciocínio Lógico',icon:'🧩',q:10,mod:'I',topicos:[
+  {t:'Problemas de idade e diferença entre idades',imp:'alto',conteudo:{titulo:'Problemas de idade',blocos:[
+    {h:'A regra de ouro',p:'A diferença de idade entre duas pessoas é CONSTANTE ao longo do tempo. Isso resolve quase todos os problemas de idade.',exemplo:'Questão real Q.15: Quando José tinha 8, o irmão tinha 4. Diferença = 4. Hoje José tem 56 → irmão = 56 - 4 = 52 anos. Resposta: E.'},
+    {h:'Como resolver qualquer problema de idade',lista:['Calcule a diferença de idade (ela nunca muda)','Se a relação for proporcional (metade, dobro), calcule no momento informado','Aplique a diferença ao tempo atual'],dica:'Nunca tente resolver de cabeça. Monte a equação: Pessoa A - Pessoa B = diferença constante.'}
+  ]}},
+  {t:'Conjuntos e diagrama de Venn',imp:'alto',conteudo:{titulo:'Conjuntos (Diagrama de Venn)',blocos:[
+    {h:'Fórmula essencial',p:'Para dois conjuntos: A∪B = A + B - A∩B',exemplo:'Questão real Q.16: 50 atletas. 20 bermudas brancas, 25 camisetas brancas, 12 com os dois.\nA∪B = 20 + 25 - 12 = 33 têm ao menos 1 peça branca.\nSem nenhuma = 50 - 33 = 17. Resposta: D.'},
+    {dica:'Sempre desenhe o diagrama de Venn no rascunho. Coloque os que têm os DOIS no meio, depois calcule os que têm só um. Evita erros de contagem.'}
+  ]}},
+  {t:'Sequências de números e letras',imp:'alto',conteudo:{titulo:'Sequências',blocos:[
+    {h:'Sequências que se repetem',exemplo:'Questão real Q.23: SALVADORBAHIA (13 letras). Qual é a 500ª letra?\n500 ÷ 13 = 38 com resto 6. A 6ª letra é D. Resposta: C.\n\nA regra: posição ÷ tamanho_do_padrão → o resto indica a posição na sequência.'},
+    {h:'Progressão aritmética (PA)',p:'Diferença constante entre os termos. Ex: 2, 5, 8, 11 → diferença = 3. Fórmula: an = a1 + (n-1)×r',dica:'Para sequências que se repetem: divida pelo tamanho do padrão e olhe o resto. Se o resto for 0, é o último elemento.'}
+  ]}},
+  {t:'Ordenação lógica (filas e posições)',imp:'alto',conteudo:{titulo:'Ordenação lógica',blocos:[
+    {h:'Como resolver',lista:['Leia todas as restrições antes de tentar montar a ordem','Monte uma tabela: coloque cada restrição e elimine o impossível','Trabalhe com o que é mais restritivo primeiro (quem NÃO pode estar em certo lugar)','Verifique todas as restrições no final'],dica:'Monte a tabela de posições e marque X para "impossível". A posição que só tem um possível é a certeza.'}
+  ]}},
+  {t:'Negação de proposições lógicas',imp:'alto',conteudo:{titulo:'Negação de proposições',blocos:[
+    {h:'As regras que a FGV mais cobra',lista:['Negar "Todos A são B" = "Algum A NÃO é B" (não é "nenhum")','Negar "Nenhum A é B" = "Algum A é B" (não é "todos")','Negar "Algum A é B" = "Nenhum A é B"','Negar "A e B" = "não-A ou não-B"','Negar "A ou B" = "não-A e não-B"'],
+     exemplo:'Questão real Q.19: "Nenhum pescador sabe nadar" não é verdadeira.\nNegar "Nenhum A é B" = "Algum A é B".\nResposta: A — "Há pelo menos um pescador que sabe nadar".',dica:'O erro mais comum: negar "Todos" com "Nenhum". A negação correta de "Todos A" é "Algum A não".'}
+  ]}},
+  {t:'Regra de três simples e composta',imp:'medio'},
+]},
+{id:'info',nome:'Informática',icon:'💻',q:8,mod:'I',topicos:[
+  {t:'Windows 10 BR — idioma, teclado, imagem do sistema',imp:'alto',conteudo:{titulo:'Windows 10 BR',blocos:[
+    {h:'Questão real da prova 2019 (Q.25)',exemplo:'Teclado comprado nos EUA: ao pressionar ponto e vírgula, aparece cedilha. Como resolver?\nResposta: A — Adicionar o teclado apropriado nas Opções de Idioma do Português (Brasil). O problema é que o layout físico (inglês americano) não coincide com o layout configurado no Windows (português). Solução: Configurações → Hora e Idioma → Idioma → Opções → Teclados.',
+      dica:'Não é driver (D), não é novo pacote de idiomas (E). É o layout de teclado dentro das opções do idioma já instalado.'},
+    {h:'Imagem do sistema — Q.27',exemplo:'Uma imagem do sistema no Windows 10 permite recuperar: contas de usuários (I), aplicativos instalados (II) e configurações do Windows (III). Resposta: E — I, II e III. É um backup completo do estado de toda a partição do sistema.'}
+  ]}},
+  {t:'MS Excel 2016 BR — fórmulas e atalhos',imp:'alto',conteudo:{titulo:'MS Excel 2016',blocos:[
+    {h:'Questão real da prova 2019 (Q.26 e Q.28)',lista:['Q.26 — Potenciação: =B1^B2 (o ^ é o operador de potência no Excel; toda fórmula começa com =) → Resposta: C','Q.28 — Atualizar cálculos: tecla F9 → Resposta: C'],
+     exemplo:'Atalhos mais cobrados em provas:\nCtrl+C = copiar | Ctrl+V = colar | Ctrl+Z = desfazer\nF9 = recalcular fórmulas | Ctrl+S = salvar\nCtrl+Shift+Enter = fórmula matricial'},
+    {dica:'No Excel, toda fórmula OBRIGATORIAMENTE começa com =. Sem o sinal de igual, o Excel trata como texto.'}
+  ]}},
+  {t:'MS Word 2016 BR — estilos e formatação',imp:'medio',conteudo:{titulo:'MS Word 2016',blocos:[
+    {h:'Questões reais 2019 (Q.30 e Q.31)',lista:['Q.30 — Estilos permitem: alterar rapidamente a formatação de partes do documento baseadas em um mesmo estilo → Resposta: A','Q.31 — Ícone "A com pincel" = Pincel de Formatação → Resposta: D (copia a formatação de um trecho e aplica em outro)'],
+     dica:'Ícones mais cobrados no Word: Pincel de Formatação (A+pincel), Cor da Fonte (A sublinhado colorido), Realce (caneta marca-texto), Limpar Formatação (A com borracha).'}
+  ]}},
+  {t:'Armazenamento — KB, MB, GB, TB',imp:'medio',conteudo:{titulo:'Armazenamento',blocos:[
+    {h:'Questão real da prova 2019 (Q.32)',exemplo:'4 livros × 500 páginas × 25 linhas × 60 caracteres = 3.000.000 bytes ≈ 2,86 MB.\nDispositivo com menor desperdício que comporte: CD-R de 650 MB. Resposta: C.',lista:['1 caractere ASCII = 1 byte','1 KB = 1.024 bytes','1 MB = 1.024 KB = 1.048.576 bytes','1 GB = 1.024 MB','1 TB = 1.024 GB'],
+     dica:'Para calcular: quantidade de caracteres = quantidade de bytes. Depois converta para a unidade pedida.'}
+  ]}},
+  {t:'Explorador de Arquivos — Windows Explorer',imp:'baixo'},
+]},
+{id:'legis',nome:'Legislação Institucional',icon:'⚖️',q:8,mod:'I',topicos:[
+  {t:'LC 1/1999 — Estatuto do Servidor de Salvador',imp:'alto',conteudo:{titulo:'LC 1/1999 — Estatuto do Servidor',blocos:[
+    {h:'Os 5 tipos de movimentação (mais cobrados)',lista:['RECONDUÇÃO: retorno ao cargo anterior por reintegração do titular ou não aprovação no estágio probatório','REINTEGRAÇÃO: retorno de quem foi demitido ilegalmente (decisão judicial)','REVERSÃO: retorno do servidor aposentado ao serviço ativo','APROVEITAMENTO: aproveitamento de servidor em disponibilidade em outro cargo','REMOÇÃO: deslocamento sem mudança de cargo ou remuneração'],
+     exemplo:'Questão real Q.33: João foi para cargo Y. Pedro (ex-ocupante) voltou por decisão judicial. João retornou ao cargo X original → RECONDUÇÃO. Resposta: D.'},
+    {h:'Substituição e diferença remuneratória — Q.34',exemplo:'Substituição por férias de ocupante de cargo em comissão → direito a diferença remuneratória somente quando alcança 15 dias consecutivos. Resposta: C.',
+     dica:'Decore o mnemônico: RECONDUÇÃO-REINTEGRAÇÃO-REVERSÃO-APROVEITAMENTO-REMOÇÃO. Cada uma tem uma situação específica.'}
+  ]}},
+  {t:'Lei Orgânica do Município de Salvador',imp:'alto',conteudo:{titulo:'Lei Orgânica de Salvador',blocos:[
+    {h:'Questão real da prova 2019 (Q.38)',exemplo:'Como é feita a eleição da Mesa da Câmara Municipal? → Pelo REGIMENTO INTERNO, cuja elaboração compete privativamente à Câmara Municipal. Resposta: A.'},
+    {h:'Questão real da prova 2019 (Q.39)',exemplo:'Vereador Alberto atribuiu crime ao vereador Bruno durante passeata. Alberto pode ser responsabilizado? → NÃO — é inviolável por suas opiniões, palavras e votos relacionados ao exercício do mandato. Resposta: E.',
+     dica:'Imunidade dos vereadores: MATERIAL (não respondem por opiniões/palavras/votos no exercício do mandato) e FORMAL (não têm imunidade para prisão, diferente de deputados).'}
+  ]}},
+  {t:'Sanções disciplinares e processo administrativo',imp:'medio'},
+  {t:'Princípios constitucionais — LIMPE',imp:'alto',conteudo:{titulo:'Princípios da Administração Pública',blocos:[
+    {h:'LIMPE — os 5 princípios do art. 37 da CF/88',lista:['LEGALIDADE: o servidor só pode fazer o que a LEI permite (diferente do cidadão comum)','IMPESSOALIDADE: não beneficiar nem prejudicar por razões pessoais ou políticas','MORALIDADE: agir com ética mesmo quando a lei não exige explicitamente','PUBLICIDADE: os atos devem ser transparentes e acessíveis ao público','EFICIÊNCIA: fazer bem feito, com qualidade e sem desperdício'],
+     exemplo:'Questão clássica: Um servidor que favorece um familiar na contratação viola qual princípio? IMPESSOALIDADE (e também MORALIDADE).',dica:'Decore a sigla LIMPE. A FGV frequentemente apresenta situações e pergunta qual princípio foi violado.'}
+  ]}},
+]},
+{id:'esp',nome:'Conhecimentos Específicos',icon:'🛡️',q:30,mod:'II',topicos:[
+  {t:'Poder de polícia e atos administrativos',imp:'alto',conteudo:{titulo:'Poder de polícia',blocos:[
+    {h:'Conceito (Q.41)',exemplo:'Poder de polícia = "prerrogativa de direito público que autoriza a Administração Pública a RESTRINGIR o uso e o gozo da liberdade e da propriedade em favor do interesse da COLETIVIDADE." Resposta: C.',lista:['A GCM exerce poder de polícia preventivo nos espaços municipais','A GCM NÃO pode prender (salvo flagrante)','A GCM NÃO investiga crimes','A GCM NÃO faz busca e apreensão sem mandado judicial']},
+    {h:'Atributos dos atos administrativos',lista:['PRESUNÇÃO DE LEGITIMIDADE: presume-se legal até prova em contrário','IMPERATIVIDADE: é obrigatório, independe da concordância do particular','AUTOEXECUTORIEDADE (Q.43): pode ser executado imediatamente, sem ir ao Judiciário primeiro','TIPICIDADE: o ato deve corresponder a um tipo previsto em lei'],
+     exemplo:'Q.43: Autoexecutoriedade = poder ser o ato, imediatamente executado, e seu objeto alcançado, sem prévia intervenção do Poder Judiciário. Resposta: E.',dica:'A autoexecutoriedade é o mais cobrado. Significa que a administração não precisa de ordem judicial para executar seus atos (ex: interditar um estabelecimento).'}
+  ]}},
+  {t:'Bens públicos — classificação',imp:'alto',conteudo:{titulo:'Bens públicos',blocos:[
+    {h:'3 categorias fundamentais',lista:['USO COMUM DO POVO: praças, ruas, rios, praias — todos usam livremente','USO ESPECIAL: escolas, hospitais, quartéis, repartições — usados pela administração para serviços públicos','DOMINICAIS: bens que o Estado possui como proprietário, sem destinação específica (ex: terrenos baldios públicos)'],
+     exemplo:'Q.42: Exemplos de bens de USO ESPECIAL → B — Postos de saúde, creches e cemitérios municipais. São usados pela administração para prestação de serviços. Resposta: B.',dica:'Macete: Uso ESPECIAL = o Estado usa como ferramenta de trabalho. Uso COMUM = todos usam. DOMINICAL = Estado é dono mas não usa.'}
+  ]}},
+  {t:'Lei 13.022/2014 — Estatuto Geral das Guardas Municipais',imp:'alto',conteudo:{titulo:'Lei 13.022/2014',blocos:[
+    {h:'5 questões cobradas desta lei na prova 2019',lista:['Q.50: GCM NÃO investiga crimes → Resposta: B (não está autorizada a investigar nenhum crime)','Q.66: GCM atuar com órgão de trânsito estadual → pressupõe CONVÊNIO → Resposta: E','Q.67: GCM de Salvador → natureza de superintendência, vinculada à Secretaria Municipal de Ordem Pública, comandada por Inspetor Geral → Resposta: D','Q.68: Proteger área ambiental MUNICIPAL → LEGAL → Resposta: B','Q.70: Flagrante → prender e encaminhar ao DELEGADO → Resposta: E'],
+     dica:'ATENÇÃO clássica: a GCM prende em flagrante e encaminha ao DELEGADO — nunca à sede da GCM. Isso cai sempre!'}
+  ]}},
+  {t:'Crimes contra o patrimônio — furto e peculato',imp:'alto',conteudo:{titulo:'Crimes: furto e peculato',blocos:[
+    {h:'Furto simples × qualificado × mediante fraude × estelionato',lista:['FURTO SIMPLES: subtrai sem violência ou fraude','FURTO MEDIANTE FRAUDE: fraude usada para FACILITAR a subtração (vítima não entrega voluntariamente)','ESTELIONATO: vítima é enganada e ENTREGA o bem voluntariamente','FURTO QUALIFICADO: chave falsa, escalada, arrombamento, concurso de pessoas'],
+     exemplo:'Q.51: Joana fingiu ser vendedora para distrair Marta e subtraiu o celular → FURTO MEDIANTE FRAUDE (a fraude facilitou, não fez a vítima entregar). Resposta: B.',dica:'A distinção chave: no furto mediante fraude a vítima não percebe a subtração. No estelionato a vítima entrega voluntariamente enganada.'},
+    {h:'Peculato',exemplo:'Q.52: Rogério (funcionário público) subtraiu laptop da repartição com primo João (civil que sabia do cargo). → PECULATO SIMPLES para Rogério + João responde pelo peculato também (o crime próprio se comunica ao partícipe que tem conhecimento da qualidade de funcionário público). Resposta: B.',dica:'Peculato é crime próprio (só funcionário público pode ser autor), mas o partícipe civil responde se soube da condição.'}
+  ]}},
+  {t:'Lesão corporal — tipos e distinção',imp:'alto',conteudo:{titulo:'Lesão corporal',blocos:[
+    {h:'3 modalidades de lesão corporal',lista:['LEVE: sem sequelas graves ou incapacidade até 30 dias','GRAVE: incapacidade habitual > 30 dias; debilidade permanente leve; aceleração do parto','GRAVÍSSIMA: incapacidade permanente; perda de órgão/sentido; deformidade permanente; enfermidade incurável; perigo de vida'],
+     exemplo:'Q.53: Tatiana jogou garrafa (intenção: lesão nos braços). Atingiu a cabeça. Larissa ficou internada 2 meses (incapacidade > 30 dias) → LESÃO CORPORAL GRAVE. Não gravíssima (sem perigo de vida). Resposta: E.',dica:'Incapacidade por mais de 30 dias = lesão GRAVE. Perigo de vida = lesão GRAVÍSSIMA. A distinção cai sempre.'}
+  ]}},
+  {t:'CTB — crimes de trânsito e habilitação',imp:'alto'},
+  {t:'Código Civil — bens, capacidade civil e comoriência',imp:'medio'},
+  {t:'Direito Constitucional — CF/88 art. 5º, direitos fundamentais',imp:'alto'},
+  {t:'Mandados constitucionais — MS, MI, HC, HD',imp:'medio',conteudo:{titulo:'Mandados Constitucionais',blocos:[
+    {h:'Quadro comparativo dos 4 remédios',lista:['HABEAS CORPUS (HC): protege a liberdade de locomoção ameaçada ou violada','MANDADO DE SEGURANÇA (MS): protege direito líquido e certo não amparado por HC ou HD','MANDADO DE INJUNÇÃO (MI): quando a falta de norma regulamentadora impede o exercício de direito constitucional','HABEAS DATA (HD): assegura acesso a informações pessoais em bancos de dados governamentais'],
+     exemplo:'Q.46: Ednaldo teve aposentadoria negada ilegalmente. Ação correta? → MANDADO DE SEGURANÇA (direito líquido e certo violado por ato de autoridade pública). Resposta: A.',dica:'Regra simples: liberdade de ir e vir = HC. Qualquer outro direito líquido e certo = MS. Sem norma regulamentadora = MI. Informações pessoais = HD.'}
+  ]}},
+]},
+];
+
+const QUESTOES_REAIS=[
+  {id:1,mat:'port',fonte:'Q.2 · GCM Salvador 2019 · FGV',txt:'A manchete publicou: "Comida desperdiçada na América Latina reduziria 37% da fome do mundo / Cerca de 348 mil toneladas de alimentos são perdidas por dia na região." Sobre os componentes do texto, assinale a afirmativa correta.',alts:['A) Se a América Latina não desperdiçasse, acabaria a fome no mundo','B) A crítica do texto se dirige ao atraso cultural da América Latina','C) A expressão "cerca de" indica precisamente a quantidade de alimentos','D) Em todo o texto há identificação clara do responsável pelo desperdício','E) A forma verbal "reduziria" indica uma possibilidade, não uma certeza'],ok:4,exp:'O futuro do pretérito ("reduziria") indica hipótese ou possibilidade, nunca certeza. As demais alternativas contradizem o texto ou vão além do que ele afirma.'},
+  {id:2,mat:'log',fonte:'Q.15 · GCM Salvador 2019 · FGV',txt:'Quando José tinha 8 anos, seu irmão tinha a metade da idade dele. Hoje, José tem 56 anos. A idade de seu irmão é:',alts:['A) 23 anos','B) 28 anos','C) 33 anos','D) 42 anos','E) 52 anos'],ok:4,exp:'Quando José tinha 8, o irmão tinha 4. Diferença = 4 anos (constante). Hoje José tem 56 → irmão = 56 - 4 = 52 anos. Resposta: E.'},
+  {id:3,mat:'log',fonte:'Q.16 · GCM Salvador 2019 · FGV',txt:'50 atletas treinam. 20 com bermudas brancas, 25 com camisetas brancas e 12 com bermudas E camisetas brancas. Quantos NÃO estão vestindo nenhuma peça branca?',alts:['A) 5','B) 13','C) 15','D) 17','E) 20'],ok:3,exp:'A∪B = A + B - A∩B = 20 + 25 - 12 = 33 têm ao menos 1 peça branca. Sem nenhuma = 50 - 33 = 17. Resposta: D.'},
+  {id:4,mat:'log',fonte:'Q.23 · GCM Salvador 2019 · FGV',txt:'Faixa com letras: SALVADORBAHIASALVADORBAHIA... A 500ª letra desta sequência é:',alts:['A) A','B) L','C) D','D) S','E) V'],ok:2,exp:'"SALVADORBAHIA" tem 13 letras. 500 ÷ 13 = 38 com resto 6. Contando: S(1)A(2)L(3)V(4)A(5)D(6) = D. Resposta: C.'},
+  {id:5,mat:'info',fonte:'Q.26 · GCM Salvador 2019 · FGV',txt:'No MS Excel 2016 BR, para calcular B1 elevado ao valor de B2 e armazenar em B3, a fórmula correta é:',alts:['A) 2^4','B) 2**4','C) =B1^B2','D) B1^B2','E) =2^4'],ok:2,exp:'Toda fórmula no Excel começa com =. O operador de potenciação é ^. Portanto: =B1^B2. Resposta: C.'},
+  {id:6,mat:'legis',fonte:'Q.33 · GCM Salvador 2019 · FGV',txt:'João estava no cargo Y. Pedro (ex-ocupante) voltou por decisão judicial. João retornou ao cargo X (anterior), ainda vago. Esse retorno denomina-se:',alts:['A) Aproveitamento','B) Reintegração','C) Reversão','D) Recondução','E) Remoção'],ok:3,exp:'RECONDUÇÃO = retorno ao cargo anterior por reintegração do titular ou inabilitação em estágio probatório. Resposta: D.'},
+  {id:7,mat:'esp',fonte:'Q.41 · GCM Salvador 2019 · FGV',txt:'O poder de polícia pode ser conceituado como a prerrogativa que autoriza:',alts:['A) A Administração a editar leis complementares sobre forças municipais','B) O Executivo a confiscar bens de origem ilícita','C) A Administração a restringir liberdade e propriedade em favor da coletividade','D) A GCM a prender suspeitos de crimes hediondos sem flagrante ou mandado','E) A GCM a realizar busca e apreensão em casas sem autorização judicial'],ok:2,exp:'Poder de polícia = restrição de direitos individuais (liberdade e propriedade) em favor do interesse coletivo, com base em lei. A GCM NÃO prende sem flagrante nem faz busca sem mandado. Resposta: C.'},
+  {id:8,mat:'esp',fonte:'Q.47 · GCM Salvador 2019 · FGV',txt:'Pedro estava praticando furto em um carro na rua (situação de flagrante). Quem pode prendê-lo naquele instante?',alts:['A) Apenas o Delegado de Polícia','B) Apenas o proprietário do veículo','C) Apenas com ordem judicial','D) Qualquer do povo','E) Apenas a polícia'],ok:3,exp:'Em situação de flagrante delito (CF/88, art. 5º, LXI), qualquer do povo pode prender. A prisão em flagrante não exige ordem judicial nem policial. Resposta: D.'},
+  {id:9,mat:'esp',fonte:'Q.51 · GCM Salvador 2019 · FGV',txt:'Joana fingiu ser vendedora, criou situação que distraiu Marta e subtraiu o celular dela (sobre o banco). O crime é:',alts:['A) Furto simples','B) Furto mediante fraude','C) Estelionato simples','D) Apropriação indébita simples','E) Apropriação indébita majorada pela fraude'],ok:1,exp:'FURTO MEDIANTE FRAUDE: a fraude foi usada para CRIAR a situação que facilitou a subtração — Marta não entregou o bem. Se tivesse entregado enganada = estelionato. Resposta: B.'},
+  {id:10,mat:'esp',fonte:'Q.70 · GCM Salvador 2019 · FGV',txt:'Guardas João e Maria viram Ana furtando de uma banca ambulante (flagrante). De acordo com a Lei 13.022/2014, eles devem:',alts:['A) Prender Ana e levá-la à sede da GCM','B) Solicitar que Ana se apresente à Polícia Judiciária','C) Comunicar ao ambulante para que ele prenda Ana','D) Reportar ao superior hierárquico para que adote providências','E) Prender Ana e encaminhá-la ao Delegado de Polícia'],ok:4,exp:'A GCM pode prender em flagrante, mas deve encaminhar ao DELEGADO — não à sede da GCM. Armadilha clássica desta questão. Resposta: E.'},
+  {id:11,mat:'esp',fonte:'Q.53 · GCM Salvador 2019 · FGV',txt:'Tatiana jogou garrafa com intenção de acertar os braços de Larissa. A garrafa atingiu a cabeça. Larissa ficou internada 2 meses. Tatiana responde por:',alts:['A) Tentativa de homicídio culposo','B) Lesão corporal gravíssima + tentativa de homicídio','C) Tentativa de homicídio doloso apenas','D) Lesão corporal leve','E) Lesão corporal grave'],ok:4,exp:'Incapacidade > 30 dias = LESÃO CORPORAL GRAVE (não gravíssima — vida não foi colocada em risco). O resultado mais grave (cabeça) ocorreu por aberratio ictus (erro no golpe) — responde pelo resultado obtido. Resposta: E.'},
+  {id:12,mat:'log',fonte:'Q.19 · GCM Salvador 2019 · FGV',txt:'Considerando que "Nenhum pescador sabe nadar" NÃO é verdadeira, é correto concluir que:',alts:['A) Há pelo menos um pescador que sabe nadar','B) Quem não é pescador não sabe nadar','C) Todos os pescadores sabem nadar','D) Todas as pessoas que sabem nadar são pescadores','E) Ninguém que sabe nadar é pescador'],ok:0,exp:'Negar "Nenhum A é B" = "Algum A é B". Portanto: "Há pelo menos um pescador que sabe nadar". Não significa que TODOS sabem. Resposta: A.'},
+  {id:13,mat:'info',fonte:'Q.31 · GCM Salvador 2019 · FGV',txt:'No MS Word 2016 BR, o ícone com a letra "A" e um símbolo de pincel na Guia Página Inicial tem a função de:',alts:['A) Cor da Fonte','B) Estilos','C) Limpar Formatação','D) Pincel de Formatação','E) Realce'],ok:3,exp:'O Pincel de Formatação (A + pincel) copia a formatação de um trecho selecionado e aplica em outro. É diferente de Cor da Fonte (A sublinhado colorido) e de Realce (caneta marca-texto). Resposta: D.'},
+  {id:14,mat:'legis',fonte:'Q.46 · GCM Salvador 2019 · FGV',txt:'Ednaldo preencheu todos os requisitos para aposentadoria, mas o requerimento foi negado ilegalmente. A ação constitucional cabível é:',alts:['A) Mandado de Segurança','B) Mandado de Injunção','C) Direito de Petição','D) Habeas Corpus','E) Habeas Data'],ok:0,exp:'MANDADO DE SEGURANÇA protege direito líquido e certo violado por autoridade pública (não amparado por HC ou HD). O direito à aposentadoria é líquido e certo — preencheu todos os requisitos. Resposta: A.'},
+  {id:15,mat:'port',fonte:'Q.12 · GCM Salvador 2019 · FGV',txt:'Texto: "A redução da maioridade penal é urgente, pois 98% da população apoia a redução." Que tipo de argumento é este?',alts:['A) Autoritário','B) Narrativo','C) Causal','D) Opinativo','E) Tendencioso'],ok:0,exp:'ARGUMENTO AUTORITÁRIO: usa a opinião da maioria ou de uma autoridade como prova, sem apresentar razões lógicas ou científicas. O número "98%" é usado como autoridade, não como raciocínio. Resposta: A.'},
+];
+
+// ══════════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════════
+let S={topicos:{},qAc:0,qEr:0,qTot:0,reds:0,xp:0};
+try{const s=JSON.parse(localStorage.getItem('gcm_v4')||'{}');if(s.topicos)Object.assign(S,s);}catch(e){}
+function save(){try{localStorage.setItem('gcm_v4',JSON.stringify(S));}catch(e){}}
+
+// ══════════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ══════════════════════════════════════════════════════════
+function goTo(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='materias')renderMat();
+  if(id==='questoes')renderQ();
+  if(id==='plano')renderPlano();
+  if(id==='agente'||id==='tutor'||id==='redacao')atualizarStatusKey();
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════════════
+function updateStats(){
+  let tot=0,f=0;
+  MATERIAS.forEach(m=>m.topicos.forEach((_,i)=>{tot++;if(S.topicos[m.id+'_'+i])f++;}));
+  const pct=tot?Math.round(f/tot*100):0;
+  const tx=S.qTot?Math.round(S.qAc/S.qTot*100):0;
+  const $=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  $('xp-v',S.xp);$('hs-top',f);$('hs-q',S.qTot);$('hs-ac',tx+'%');
+  const pb=document.getElementById('prog-bar');if(pb)pb.style.width=pct+'%';
+  $('prog-pct',pct+'%');$('p-top',f);$('p-q',S.qTot);$('p-ac',tx+'%');$('p-red',S.reds);
+  const ach=(id,c)=>{const el=document.getElementById(id);if(el)el.classList.toggle('unlock',c);};
+  ach('ach1',f>=1);ach('ach2',f>=10);ach('ach3',S.qTot>=5);ach('ach4',S.reds>=1);
+  ach('ach5',tx>=70&&S.qTot>=5);
+}
+
+// ══════════════════════════════════════════════════════════
+// MATÉRIAS
+// ══════════════════════════════════════════════════════════
+function renderMat(){
+  const g=document.getElementById('mat-grid');g.innerHTML='';
+  MATERIAS.forEach(m=>{
+    let f=0;m.topicos.forEach((_,i)=>{if(S.topicos[m.id+'_'+i])f++;});
+    const pct=Math.round(f/m.topicos.length*100);
+    const el=document.createElement('div');
+    el.className='mat-card';
+    el.innerHTML=`${pct===100?'<div class="mat-done">✓ Completo</div>':''}
+      <span class="mat-icon">${m.icon}</span>
+      <div class="mat-name">${m.nome}</div>
+      <div class="mat-badge-mod">Módulo ${m.mod} · ${m.q} questões</div>
+      <div class="mat-prog-track"><div class="mat-prog-fill" style="width:${pct}%"></div></div>
+      <div class="mat-meta">${f}/${m.topicos.length} tópicos estudados</div>`;
+    el.onclick=()=>abrirMat(m.id);
+    g.appendChild(el);
+  });
+}
+
+function abrirMat(id){
+  const m=MATERIAS.find(x=>x.id===id);if(!m)return;
+  const wrap=document.getElementById('topicos-wrap');
+  document.getElementById('topicos-hdr').textContent=m.icon+' '+m.nome;
+  const list=document.getElementById('topicos-list');list.innerHTML='';
+  m.topicos.forEach((t,i)=>{
+    const key=m.id+'_'+i;const done=!!S.topicos[key];
+    const tcls=t.imp==='alto'?'tag-a':t.imp==='medio'?'tag-m':'tag-b';
+    const tlbl=t.imp==='alto'?'Alta prioridade':t.imp==='medio'?'Média':'Baixa';
+    const div=document.createElement('div');div.className='topico-row';
+    div.innerHTML=`<div class="chk ${done?'done':''}" id="ck_${key}" onclick="toggleT('${key}','${m.id}',event)">${done?'✓':''}</div>
+      <div class="topico-info">
+        <div class="topico-name">${t.t}</div>
+        <div class="topico-tags">
+          <span class="tag ${tcls}">${tlbl}</span>
+          ${t.conteudo?'<span class="tag" style="background:var(--blue-bg);color:var(--blue)">📚 Conteúdo disponível</span>':''}
+        </div>
+        ${t.conteudo?`<button class="btn-estudar" onclick="openModal('${m.id}',${i});event.stopPropagation()">📖 Estudar conteúdo</button>`:''}
+      </div>`;
+    list.appendChild(div);
+  });
+  wrap.style.display='block';
+  wrap.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleT(key,matId,e){
+  e&&e.stopPropagation();
+  const was=!!S.topicos[key];
+  S.topicos[key]=!was;
+  if(!was)S.xp+=10;else if(S.xp>=10)S.xp-=10;
+  save();
+  const chk=document.getElementById('ck_'+key);
+  if(chk){chk.classList.toggle('done',!!S.topicos[key]);chk.textContent=S.topicos[key]?'✓':'';}
+  renderMat();updateStats();
+}
+
+// ══════════════════════════════════════════════════════════
+// MODAL — CONTEÚDO
+// ══════════════════════════════════════════════════════════
+function openModal(matId,idx){
+  const m=MATERIAS.find(x=>x.id===matId);
+  const t=m&&m.topicos[idx];
+  if(!t||!t.conteudo)return;
+  document.getElementById('modal-title').textContent=t.conteudo.titulo;
+  const body=document.getElementById('modal-body');
+  body.innerHTML='<div class="real-badge">✅ Contém questões reais — GCM Salvador 2019 · FGV</div>';
+  t.conteudo.blocos.forEach(b=>{
+    let h='<div class="cb">';
+    if(b.h)h+=`<h3>${b.h}</h3>`;
+    if(b.p)h+=`<p>${b.p}</p>`;
+    if(b.lista)h+=`<ul>${b.lista.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    if(b.exemplo)h+=`<div class="ex-box"><strong>📋 Exemplo / Questão real:</strong>${b.exemplo.replace(/\n/g,'<br>')}</div>`;
+    if(b.dica)h+=`<div class="dica-box"><strong>💡 Dica para a prova:</strong>${b.dica}</div>`;
+    h+='</div>';
+    body.innerHTML+=h;
+  });
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ══════════════════════════════════════════════════════════
+// QUESTÕES REAIS
+// ══════════════════════════════════════════════════════════
+let qIdx=0,qFilt='todas',qResp=false,qList=[...QUESTOES_REAIS];
+function filtrarQ(el,f){
+  document.querySelectorAll('#q-filtro .tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');qFilt=f;
+  qList=f==='todas'?[...QUESTOES_REAIS]:QUESTOES_REAIS.filter(q=>q.mat===f);
+  qIdx=0;qResp=false;renderQ();
+}
+function renderQ(){
+  if(!qList.length){document.getElementById('q-wrap').innerHTML='<p style="color:var(--text3);font-size:13px">Nenhuma questão nesse filtro.</p>';return;}
+  const q=qList[qIdx%qList.length];qResp=false;
+  document.getElementById('q-num').textContent=(qIdx%qList.length)+1;
+  document.getElementById('q-tot').textContent=qList.length;
+  let html=`<div class="q-meta"><span class="q-fonte-badge">📋 ${q.fonte}</span></div>
+    <div class="q-enunciado">${q.txt}</div>`;
+  q.alts.forEach((a,i)=>html+=`<div class="alt" id="qa${i}" onclick="respQ(${i},${q.ok},\`${q.exp.replace(/`/g,"'")}\`)"><span class="alt-l">${String.fromCharCode(65+i)})</span>${a}</div>`);
+  html+=`<div class="fb" id="qfb"></div>`;
+  document.getElementById('q-wrap').innerHTML=html;
+}
+function respQ(idx,ok,exp){
+  if(qResp)return;qResp=true;
+  document.querySelectorAll('.alt').forEach((el,i)=>{if(i===ok)el.classList.add('correta');if(i===idx&&idx!==ok)el.classList.add('errada');});
+  const fb=document.getElementById('qfb');
+  if(idx===ok){S.qAc++;S.xp+=5;fb.className='fb show ok';fb.innerHTML=`<strong>✅ Correto!</strong>${exp}`;}
+  else{S.qEr++;fb.className='fb show err';fb.innerHTML=`<strong>❌ Incorreto.</strong>${exp}`;}
+  document.getElementById('q-ac').textContent=S.qAc;
+  document.getElementById('q-er').textContent=S.qEr;
+  S.qTot++;save();updateStats();
+}
+function proxQ(){qIdx++;renderQ();}
+
+// ══════════════════════════════════════════════════════════
+// API KEY MANAGEMENT
+// ══════════════════════════════════════════════════════════
+function getApiKey(){return localStorage.getItem('gcm_apikey')||'';}
+function salvarApiKey(){
+  const k=document.getElementById('apikey-input').value.trim();
+  if(!k){alert('Cole sua chave API antes de salvar.');return;}
+  localStorage.setItem('gcm_apikey',k);
+  document.getElementById('apikey-input').value='';
+  atualizarStatusKey();
+  alert('✅ Chave salva! Agora você pode usar as funções de IA.');
+}
+function atualizarStatusKey(){
+  const el=document.getElementById('key-status');if(!el)return;
+  const k=getApiKey();
+  if(k){el.className='key-status ok';el.textContent='✅ Chave configurada ('+k.slice(0,12)+'...)';}
+  else{el.className='key-status missing';el.textContent='⚠️ Nenhuma chave configurada — configure acima para usar as funções de IA';}
+}
+
+function checkKey(errId){
+  const k=getApiKey();
+  if(!k){
+    const el=document.getElementById(errId);
+    if(el){el.textContent='❌ Configure sua chave da API Anthropic no topo desta aba antes de continuar.';el.style.display='block';}
+    return false;
+  }
+  return true;
+}
+
+async function callAI(prompt,maxTokens=1200){
+  const key=getApiKey();
+  if(!key)throw new Error('Chave API não configurada. Configure-a no topo da aba "IA Questões".');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTokens,messages:[{role:'user',content:prompt}]})
+  });
+  if(!r.ok){const t=await r.text();throw new Error(`HTTP ${r.status}: ${t}`);}
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+  const txt=(d.content||[]).map(c=>c.text||'').join('');
+  const m=txt.replace(/```json|```/g,'').trim().match(/\{[\s\S]*\}/);
+  return m?m[0]:txt;
+}
+
+// ══════════════════════════════════════════════════════════
+// AGENTE IA — GERADOR DE QUESTÕES
+// ══════════════════════════════════════════════════════════
+let agQuestaoAtual=null;let agAltSelecionada=-1;
+
+async function gerarQuestao(){
+  if(!checkKey('ag-erro'))return;
+  const mat=document.getElementById('ag-mat').value;
+  const dif=document.getElementById('ag-dif').value;
+  const btn=document.getElementById('btn-gerar');
+  btn.disabled=true;btn.textContent='⏳ Gerando...';
+  document.getElementById('ag-loading').style.display='block';
+  document.getElementById('ag-questao-wrap').style.display='none';
+  document.getElementById('ag-resultado').classList.remove('show');
+  document.getElementById('ag-erro').style.display='none';
+  document.getElementById('ag-resp').value='';
+  agAltSelecionada=-1;agQuestaoAtual=null;
+
+  const prompt=`Você é especialista em criar questões para concursos públicos brasileiros no estilo exato da banca FGV, nível médio. Crie uma questão objetiva de dificuldade ${dif} sobre "${mat}" para o concurso de Guarda Civil Municipal de Salvador 2026.
+
+Regras obrigatórias:
+- 5 alternativas (A a E), apenas uma correta
+- Enunciado com cenário concreto quando possível (não decoreba pura)
+- Estilo FGV: situações práticas, linguagem objetiva
+- Questão inédita
+- Alternativas com tamanho similar entre si
+
+Responda SOMENTE em JSON válido sem nenhum texto antes ou depois:
+{"enunciado":"texto completo da questão","alternativas":["texto A","texto B","texto C","texto D","texto E"],"gabarito":0,"explicacao":"explicação clara do gabarito e por que as demais estão erradas"}`;
+
+  try{
+    const json=await callAI(prompt,1400);
+    const q=JSON.parse(json);
+    agQuestaoAtual=q;
+    const matLabel=document.getElementById('ag-mat').options[document.getElementById('ag-mat').selectedIndex].text.replace(/^[^\s]+\s/,'');
+    document.getElementById('ag-materia-badge').textContent=matLabel;
+    document.getElementById('ag-dif-badge').textContent=dif.charAt(0).toUpperCase()+dif.slice(1);
+    document.getElementById('ag-enunciado').textContent=q.enunciado;
+    const altsWrap=document.getElementById('ag-alts-wrap');altsWrap.innerHTML='';
+    q.alternativas.forEach((a,i)=>{
+      const div=document.createElement('div');div.className='alt';div.id='ag-alt-'+i;
+      div.innerHTML=`<span class="alt-l">${String.fromCharCode(65+i)})</span>${a.replace(/^[A-E]\)\s*/,'')}`;
+      div.onclick=()=>{
+        document.querySelectorAll('[id^="ag-alt-"]').forEach(el=>{el.style.borderColor='';el.style.background='';});
+        div.style.borderColor='var(--gold)';div.style.background='var(--gold3)';
+        agAltSelecionada=i;
+      };
+      altsWrap.appendChild(div);
+    });
+    document.getElementById('ag-questao-wrap').style.display='block';
+  }catch(e){
+    document.getElementById('ag-erro').textContent='Erro ao gerar questão: '+(e.message||e);
+    document.getElementById('ag-erro').style.display='block';
+  }
+  document.getElementById('ag-loading').style.display='none';
+  btn.disabled=false;btn.textContent='⚡ Gerar questão';
+}
+
+async function corrigirAgente(){
+  if(!agQuestaoAtual||!checkKey('ag-erro'))return;
+  const resp=document.getElementById('ag-resp').value.trim();
+  const altSel=agAltSelecionada;
+  if(altSel===-1&&!resp){
+    document.getElementById('ag-erro').textContent='Selecione uma alternativa ou escreva sua resposta antes de enviar.';
+    document.getElementById('ag-erro').style.display='block';return;
+  }
+  document.getElementById('ag-erro').style.display='none';
+  const btn=document.getElementById('btn-corr-ag');
+  btn.disabled=true;btn.textContent='⏳ Corrigindo...';
+  const altTexto=altSel>=0?`${String.fromCharCode(65+altSel)}) ${agQuestaoAtual.alternativas[altSel]}`:'(não selecionou alternativa)';
+
+  const prompt=`Você é professor de concursos públicos (banca FGV, GCM Salvador). Corrija a resposta do candidato com didatismo e encorajamento.
+
+QUESTÃO: ${agQuestaoAtual.enunciado}
+ALTERNATIVAS: ${agQuestaoAtual.alternativas.map((a,i)=>String.fromCharCode(65+i)+') '+a).join(' | ')}
+GABARITO: ${String.fromCharCode(65+agQuestaoAtual.gabarito)}) ${agQuestaoAtual.alternativas[agQuestaoAtual.gabarito]}
+EXPLICAÇÃO OFICIAL: ${agQuestaoAtual.explicacao}
+
+RESPOSTA DO CANDIDATO:
+Alternativa marcada: ${altTexto}
+Justificativa escrita: ${resp||'(não escreveu)'}
+
+Responda SOMENTE em JSON válido sem texto extra:
+{"acerto":true,"parcial":false,"avaliacao_resposta":"avaliação encorajadora de 3-4 frases sobre o que entendeu e o que errou","material_sugerido":["tópico específico 1","lei ou artigo 2","conceito 3"]}`;
+
+  try{
+    const json=await callAI(prompt,900);
+    const res=JSON.parse(json);
+    document.querySelectorAll('[id^="ag-alt-"]').forEach((el,i)=>{
+      el.style.borderColor='';el.style.background='';
+      if(i===agQuestaoAtual.gabarito)el.classList.add('correta');
+      else if(i===altSel&&altSel!==agQuestaoAtual.gabarito)el.classList.add('errada');
+    });
+    const nb=document.getElementById('ag-nota-bar');
+    if(res.acerto){nb.className='corr-nota acerto';nb.innerHTML='✅ CORRETO! Muito bem!';}
+    else if(res.parcial){nb.className='corr-nota parcial';nb.innerHTML='⚡ PARCIALMENTE CORRETO — seu raciocínio estava no caminho certo!';}
+    else{nb.className='corr-nota erro';nb.innerHTML=`❌ INCORRETO — Gabarito: ${String.fromCharCode(65+agQuestaoAtual.gabarito)}`;}
+    document.getElementById('ag-gabarito').textContent=agQuestaoAtual.explicacao;
+    document.getElementById('ag-avaliacao').textContent=res.avaliacao_resposta;
+    const ml=document.getElementById('ag-material');ml.innerHTML='';
+    (res.material_sugerido||[]).forEach(m=>{
+      const d=document.createElement('div');d.className='mat-sugestao';
+      d.innerHTML=`<span>📌</span><span>${m}</span>`;ml.appendChild(d);
+    });
+    document.getElementById('ag-resultado').classList.add('show');
+    document.getElementById('ag-resultado').scrollIntoView({behavior:'smooth'});
+    if(res.acerto){S.xp+=5;save();updateStats();}
+  }catch(e){
+    document.getElementById('ag-erro').textContent='Erro ao corrigir: '+(e.message||e);
+    document.getElementById('ag-erro').style.display='block';
+  }
+  btn.disabled=false;btn.textContent='📝 Corrigir minha resposta';
+}
+
+// ══════════════════════════════════════════════════════════
+// TUTOR IA
+// ══════════════════════════════════════════════════════════
+function setTutorTopic(t){document.getElementById('tutor-input').value=t;consultarTutor();}
+
+async function consultarTutor(){
+  const topico=document.getElementById('tutor-input').value.trim();
+  if(!topico){alert('Digite o tópico que quer estudar.');return;}
+  if(!checkKey('tutor-erro'))return;
+  const btn=document.getElementById('btn-tutor');
+  btn.disabled=true;btn.textContent='⏳ Preparando...';
+  document.getElementById('tutor-loading').style.display='block';
+  document.getElementById('tutor-result').classList.remove('show');
+  document.getElementById('tutor-erro').style.display='none';
+
+  const prompt=`Você é um tutor especialista em concursos públicos brasileiros, com profundo conhecimento em bancas como FGV, CESPE e Vunesp. Elabore um plano de estudo completo e didático sobre o seguinte tópico para um candidato ao concurso de Guarda Civil Municipal de Salvador 2026 (nível médio), que está voltando a estudar após um tempo afastado.
+
+TÓPICO SOLICITADO: "${topico}"
+
+Suas orientações devem ser fundamentadas em:
+- Análise das últimas provas da FGV para GCM e cargos similares
+- Literatura jurídica e doutrina da área (quando aplicável)
+- Padrão de cobrança e armadilhas preferidas desta banca
+
+Estruture sua resposta em JSON válido sem texto antes ou depois:
+{
+  "titulo": "nome claro e completo do tópico",
+  "relevancia": "1-2 frases sobre por que isso cai na prova e quantas questões representa",
+  "explicacao_base": "explicação didática do conceito do zero, como se o candidato nunca tivesse visto. Linguagem simples, 8-10 frases",
+  "pontos_chave": ["ponto essencial 1", "ponto essencial 2", "ponto essencial 3", "ponto 4", "ponto 5"],
+  "armadilhas_banca": ["armadilha ou erro comum 1 que a FGV explora", "armadilha 2", "armadilha 3"],
+  "exercicios": [
+    {"enunciado": "questão prática 1 baseada no estilo FGV", "resposta": "resposta correta e explicação"},
+    {"enunciado": "questão prática 2", "resposta": "resposta e explicação"},
+    {"enunciado": "questão prática 3", "resposta": "resposta e explicação"}
+  ],
+  "youtube_pesquisas": [
+    {"query": "termo exato para pesquisar no YouTube", "dica": "o que procurar no vídeo / canal recomendado"},
+    {"query": "segunda busca sugerida", "dica": "dica para filtrar o melhor resultado"},
+    {"query": "terceira busca", "dica": "tipo de conteúdo que ajudará mais"}
+  ],
+  "resumo_macete": "macete ou frase curta para nunca mais esquecer o conceito principal"
+}`;
+
+  try{
+    const json=await callAI(prompt,2000);
+    const d=JSON.parse(json);
+    document.getElementById('tutor-result-title').textContent=d.titulo;
+    document.getElementById('tutor-result-sub').textContent=d.relevancia;
+    const body=document.getElementById('tutor-result-body');
+    body.innerHTML=`
+      <div class="tutor-section">
+        <div class="tutor-section-title">📖 Explicação do zero</div>
+        <div class="tutor-text">${d.explicacao_base}</div>
+      </div>
+      <div class="tutor-section">
+        <div class="tutor-section-title">🎯 Pontos que você precisa saber</div>
+        <ul style="padding-left:20px">${(d.pontos_chave||[]).map(p=>`<li class="tutor-text" style="margin-bottom:6px">${p}</li>`).join('')}</ul>
+      </div>
+      <div class="tutor-section">
+        <div class="tutor-section-title">⚠️ Armadilhas que a FGV usa</div>
+        ${(d.armadilhas_banca||[]).map(a=>`<div class="dica-box" style="margin-bottom:8px">⚠️ ${a}</div>`).join('')}
+      </div>
+      <div class="tutor-section">
+        <div class="tutor-section-title">📝 Exercícios para praticar agora</div>
+        ${(d.exercicios||[]).map((e,i)=>`
+          <div class="tutor-exercise">
+            <div class="ex-num">Exercício ${i+1}</div>
+            <div class="ex-q">${e.enunciado}</div>
+            <details style="margin-top:8px">
+              <summary style="font-size:12px;font-weight:700;color:var(--blue);cursor:pointer">Ver resposta ▼</summary>
+              <div style="margin-top:8px;font-size:13px;line-height:1.7;color:var(--text);padding-top:8px;border-top:1px solid var(--border)">${e.resposta}</div>
+            </details>
+          </div>`).join('')}
+      </div>
+      <div class="tutor-section">
+        <div class="tutor-section-title">🎬 Como pesquisar no YouTube</div>
+        ${(d.youtube_pesquisas||[]).map(y=>`
+          <div class="tutor-youtube">
+            <strong>🔍 Pesquise: "${y.query}"</strong>
+            <div class="tutor-yt-tip">💡 ${y.dica}</div>
+          </div>`).join('')}
+      </div>
+      <div class="tutor-section">
+        <div class="tutor-section-title">🧠 Macete para nunca esquecer</div>
+        <div style="background:linear-gradient(135deg,var(--navy),var(--navy3));color:white;border-radius:var(--radius-lg);padding:16px 20px;font-size:15px;font-weight:700;line-height:1.5;text-align:center">${d.resumo_macete}</div>
+      </div>`;
+    document.getElementById('tutor-result').classList.add('show');
+    document.getElementById('tutor-result').scrollIntoView({behavior:'smooth'});
+    S.xp+=5;save();updateStats();
+  }catch(e){
+    document.getElementById('tutor-erro').textContent='Erro ao consultar tutor: '+(e.message||e);
+    document.getElementById('tutor-erro').style.display='block';
+  }
+  document.getElementById('tutor-loading').style.display='none';
+  btn.disabled=false;btn.textContent='🔍 Estudar este tópico';
+}
+
+// ══════════════════════════════════════════════════════════
+// REDAÇÃO
+// ══════════════════════════════════════════════════════════
+function toggleExemplo(){
+  const body=document.getElementById('exemplo-body');
+  const btn=document.getElementById('btn-toggle-ex');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  btn.textContent=isOpen?'Ver modelo ▼':'Ocultar ▲';
+}
+
+const TEMAS=['O papel da Guarda Civil Municipal na segurança comunitária de Salvador','Segurança pública como responsabilidade do Estado e da sociedade','Uso de tecnologia no combate à violência urbana','Direitos Humanos e atividade policial: o equilíbrio necessário','Policiamento comunitário e prevenção da violência nos bairros'];
+let temaIdx=0;
+function contarPalavras(){
+  const t=document.getElementById('red-input').value.trim();
+  const n=t?t.split(/\s+/).length:0;
+  const el=document.getElementById('wc');
+  el.textContent=`${n} palavra${n!==1?'s':''} — mínimo recomendado: 150`;
+  el.className='wc-counter '+(n>=150?'ok':n>=80?'warn':'');
+}
+function novoTema(){temaIdx=(temaIdx+1)%TEMAS.length;document.getElementById('tema-txt').textContent=TEMAS[temaIdx];document.getElementById('res-red').style.display='none';}
+function limparRed(){document.getElementById('red-input').value='';document.getElementById('wc').textContent='0 palavras — mínimo recomendado: 150';document.getElementById('wc').className='wc-counter';document.getElementById('res-red').style.display='none';}
+
+async function corrigirRed(){
+  if(!checkKey('red-err'))return;
+  const texto=document.getElementById('red-input').value.trim();
+  const err=document.getElementById('red-err');err.style.display='none';
+  if(!texto||texto.split(/\s+/).length<15){err.textContent='Escreva pelo menos 15 palavras antes de enviar.';err.style.display='block';return;}
+  const btn=document.getElementById('btn-corr-red');
+  btn.textContent='⏳ Corrigindo...';btn.disabled=true;
+  document.getElementById('res-red').style.display='none';
+
+  const prompt=`Você é professor especialista em redação para concursos públicos brasileiros, banca FGV, nível médio. Avalie a redação de um candidato ao concurso da GCM de Salvador. Seja encorajador, didático e use linguagem simples.
+
+TEMA: ${TEMAS[temaIdx]}
+REDAÇÃO: ${texto}
+
+Avalie nos critérios (notas 0 a 10): adequacao_tema, estrutura, coesao, gramatica, argumentacao.
+A média deve ser a média aritmética real das 5 notas.
+
+Responda SOMENTE em JSON válido sem texto extra:
+{"notas":{"adequacao_tema":7,"estrutura":6,"coesao":7,"gramatica":8,"argumentacao":6},"media":6.8,"pontos_positivos":"2-3 frases encorajadoras sobre o que o candidato fez bem","pontos_melhorar":"3-4 orientações práticas, específicas e simples de melhorar","dica_principal":"1 dica motivadora e concreta para a próxima redação"}`;
+
+  try{
+    const json=await callAI(prompt,1100);
+    const res=JSON.parse(json);
+    const n=res.notas;
+    const med=res.media||((n.adequacao_tema+n.estrutura+n.coesao+n.gramatica+n.argumentacao)/5);
+    const cor=med>=7?'var(--green)':med>=5?'#e67e22':'var(--red)';
+    document.getElementById('nota-grid-red').innerHTML=`
+      <div class="nota-box"><div class="nota-v" style="color:${cor}">${(+med).toFixed(1)}</div><div class="nota-l">Nota geral</div></div>
+      <div class="nota-box"><div class="nota-v" style="font-size:18px">${n.adequacao_tema}</div><div class="nota-l">Tema</div></div>
+      <div class="nota-box"><div class="nota-v" style="font-size:18px">${n.estrutura}</div><div class="nota-l">Estrutura</div></div>
+      <div class="nota-box"><div class="nota-v" style="font-size:18px">${n.coesao}</div><div class="nota-l">Coesão</div></div>
+      <div class="nota-box"><div class="nota-v" style="font-size:18px">${n.gramatica}</div><div class="nota-l">Gramática</div></div>
+      <div class="nota-box"><div class="nota-v" style="font-size:18px">${n.argumentacao}</div><div class="nota-l">Argumentos</div></div>`;
+    document.getElementById('corr-texto-red').innerHTML=`<strong>✅ Pontos positivos:</strong>\n${res.pontos_positivos}\n\n<strong>🔧 O que melhorar:</strong>\n${res.pontos_melhorar}\n\n<strong>💡 Dica para a próxima:</strong>\n${res.dica_principal}`;
+    const box=document.getElementById('res-red');box.style.display='block';
+    box.scrollIntoView({behavior:'smooth'});
+    S.reds++;S.xp+=20;save();updateStats();
+  }catch(e){
+    err.textContent='Erro ao conectar com a IA: '+(e.message||e);
+    err.style.display='block';
+  }
+  btn.textContent='🤖 Corrigir com IA';btn.disabled=false;
+}
+
+// ══════════════════════════════════════════════════════════
+// PLANO DE ESTUDOS — CRONOGRAMA SEMANAL a partir de 23/03/2026
+// ══════════════════════════════════════════════════════════
+const SEMANAS_PLANO=[
+  {num:1,ini:'23/03',fim:'29/03',fase:1,titulo:'Início — Interpretação de Texto',dias:[
+    {d:'Seg 23',p:'Português',c:'Leia 3 manchetes e identifique: ideia central + tipo de argumento',cl:'dp1',h:'1h'},
+    {d:'Ter 24',p:'Português',c:'Estude relações lógicas entre orações (causa, condição, concessão)',cl:'dp1',h:'1h'},
+    {d:'Qua 25',p:'Lógica',c:'Problemas de idade — resolva 5 exemplos com a técnica da diferença constante',cl:'dp2',h:'1h'},
+    {d:'Qui 26',p:'Lógica',c:'Conjuntos e diagrama de Venn — fórmula A∪B e exercícios',cl:'dp2',h:'1h'},
+    {d:'Sex 27',p:'Revisão',c:'Resolva Q.1, Q.2, Q.3, Q.4 do simulado da plataforma',cl:'dp5',h:'1h'},
+    {d:'Sáb 28',p:'TAF + Revisão',c:'30min corrida + 30min abdominal; revise os erros do simulado',cl:'dp4',h:'1h'},
+  ]},
+  {num:2,ini:'30/03',fim:'05/04',fase:1,titulo:'Língua Portuguesa — Gramática',dias:[
+    {d:'Seg 30',p:'Português',c:'Uso do "se" apassivador e índice de indeterminação — questão Q.1 real',cl:'dp1',h:'1h'},
+    {d:'Ter 31',p:'Português',c:'Concordância verbal e nominal — casos mais cobrados pela FGV',cl:'dp1',h:'1h'},
+    {d:'Qua 01/04',p:'Lógica',c:'Sequências numéricas e de letras — SALVADORBAHIA e padrões',cl:'dp2',h:'1h'},
+    {d:'Qui 02',p:'Lógica',c:'Negação de proposições — "Todos", "Nenhum", "Algum"',cl:'dp2',h:'1h'},
+    {d:'Sex 03',p:'Revisão',c:'Simulado: questões de Português e Lógica (todas as disponíveis)',cl:'dp5',h:'1h'},
+    {d:'Sáb 04',p:'TAF + Redação',c:'Treino físico (corrida 2.4km) + escreva 1 redação e corrija com IA',cl:'dp4',h:'1h30'},
+  ]},
+  {num:3,ini:'06/04',fim:'12/04',fase:1,titulo:'Raciocínio Lógico Completo',dias:[
+    {d:'Seg 06',p:'Lógica',c:'Ordenação lógica em filas — questão Q.24 real (Manoel/Augusto)',cl:'dp2',h:'1h'},
+    {d:'Ter 07',p:'Lógica',c:'Regra de três simples e composta — exercícios práticos',cl:'dp2',h:'1h'},
+    {d:'Qua 08',p:'Português',c:'Figuras de linguagem — denotativo vs conotativo (questão Q.10 real)',cl:'dp1',h:'1h'},
+    {d:'Qui 09',p:'Português',c:'Pontuação — vírgula obrigatória e proibida (regras FGV)',cl:'dp1',h:'1h'},
+    {d:'Sex 10',p:'IA Questões',c:'Use o Agente IA: gere 3 questões de Lógica e submeta as respostas',cl:'dp6',h:'1h'},
+    {d:'Sáb 11',p:'TAF + Simulado',c:'Treino físico + mini simulado completo (10 questões misturadas)',cl:'dp4',h:'1h30'},
+  ]},
+  {num:4,ini:'13/04',fim:'19/04',fase:1,titulo:'Revisão da Fase 1 + Simulado',dias:[
+    {d:'Seg 13',p:'Revisão Geral',c:'Refaça todos os tópicos marcados com "alta prioridade" de Português e Lógica',cl:'dp5',h:'1h'},
+    {d:'Ter 14',p:'Simulado',c:'Simulado completo: todas as 15 questões da plataforma + 5 pelo Agente IA',cl:'dp5',h:'1h'},
+    {d:'Qua 15',p:'Revisão de Erros',c:'Estude o conteúdo de cada questão que errou no simulado',cl:'dp5',h:'1h'},
+    {d:'Qui 16',p:'IA Questões',c:'Agente IA: gere questões nas matérias onde mais errou',cl:'dp6',h:'1h'},
+    {d:'Sex 17',p:'Leitura',c:'Leia 1 artigo de jornal (A Tarde) e identifique ideia central e argumentos',cl:'dp1',h:'45min'},
+    {d:'Sáb 18',p:'TAF',c:'Treino de corrida + abdominal + flexão. Acompanhe sua evolução.',cl:'dp4',h:'1h'},
+  ]},
+  {num:5,ini:'20/04',fim:'26/04',fase:2,titulo:'Legislação — Servidor e Lei Orgânica',dias:[
+    {d:'Seg 20',p:'Legislação',c:'LC 1/1999 — os 5 tipos de movimentação: Recondução, Reintegração, Reversão, Aproveitamento, Remoção',cl:'dp3',h:'1h'},
+    {d:'Ter 21',p:'Legislação',c:'Substituição e diferença remuneratória — questão Q.34 real',cl:'dp3',h:'1h'},
+    {d:'Qua 22',p:'Legislação',c:'Lei Orgânica de Salvador — imunidade de vereadores, veto do prefeito',cl:'dp3',h:'1h'},
+    {d:'Qui 23',p:'Legislação',c:'Princípios LIMPE — situações práticas e violações',cl:'dp3',h:'1h'},
+    {d:'Sex 24',p:'Simulado',c:'Questões de Legislação do simulado + 3 questões pelo Agente IA',cl:'dp5',h:'1h'},
+    {d:'Sáb 25',p:'TAF + Redação',c:'Treino físico + 1 redação sobre tema de segurança pública',cl:'dp4',h:'1h30'},
+  ]},
+  {num:6,ini:'27/04',fim:'03/05',fase:2,titulo:'Lei 13.022/2014 e Direito Adm.',dias:[
+    {d:'Seg 27',p:'Conhec. Esp.',c:'Lei 13.022/2014 completa — competências, princípios, vedações',cl:'dp4',h:'1h'},
+    {d:'Ter 28',p:'Conhec. Esp.',c:'Poder de polícia e atos administrativos (autoexecutoriedade)',cl:'dp4',h:'1h'},
+    {d:'Qua 29',p:'Conhec. Esp.',c:'Bens públicos — uso comum, especial e dominical',cl:'dp4',h:'1h'},
+    {d:'Qui 30',p:'Conhec. Esp.',c:'Licitação e contratação pública — noções básicas',cl:'dp4',h:'1h'},
+    {d:'Sex 01/05',p:'Feriado',c:'Se puder: revisar anotações da semana (30min)',cl:'dp5',h:'30min'},
+    {d:'Sáb 02',p:'TAF + Simulado',c:'Treino físico + simulado questões de Conhec. Específicos',cl:'dp4',h:'1h30'},
+  ]},
+  {num:7,ini:'04/05',fim:'10/05',fase:2,titulo:'Direito Penal — Crimes mais cobrados',dias:[
+    {d:'Seg 04',p:'Direito Penal',c:'Furto simples × mediante fraude × estelionato — distinção (Q.51)',cl:'dp4',h:'1h'},
+    {d:'Ter 05',p:'Direito Penal',c:'Peculato — conceito, modalidades e comunicabilidade com civil (Q.52)',cl:'dp4',h:'1h'},
+    {d:'Qua 06',p:'Direito Penal',c:'Lesão corporal leve, grave e gravíssima — distinção (Q.53)',cl:'dp4',h:'1h'},
+    {d:'Qui 07',p:'Direito Penal',c:'Prisão em flagrante — quem pode prender e como proceder (Q.47 e Q.70)',cl:'dp4',h:'1h'},
+    {d:'Sex 08',p:'IA Questões',c:'Agente IA: gere 5 questões de Direito Penal e submeta todas',cl:'dp6',h:'1h'},
+    {d:'Sáb 09',p:'TAF + Redação',c:'Treino físico + redação sobre direitos humanos',cl:'dp4',h:'1h30'},
+  ]},
+  {num:8,ini:'11/05',fim:'17/05',fase:2,titulo:'CTB e Código Civil',dias:[
+    {d:'Seg 11',p:'CTB',c:'Crimes de trânsito — os principais do CTB e lesão corporal culposa na direção',cl:'dp3',h:'1h'},
+    {d:'Ter 12',p:'CTB',c:'Habilitação — categorias, requisitos e progressão de categoria',cl:'dp3',h:'1h'},
+    {d:'Qua 13',p:'Código Civil',c:'Bens móveis e imóveis, fungíveis e infungíveis, consumíveis — definições (Q.58 a Q.60)',cl:'dp3',h:'1h'},
+    {d:'Qui 14',p:'Código Civil',c:'Capacidade civil e comoriência — regras básicas',cl:'dp3',h:'1h'},
+    {d:'Sex 15',p:'Simulado',c:'Simulado completo de 20 questões (mistura todas as matérias)',cl:'dp5',h:'1h'},
+    {d:'Sáb 16',p:'TAF',c:'Teste de desempenho no TAF: cronometre corrida, conte abdominais',cl:'dp4',h:'1h'},
+  ]},
+  {num:9,ini:'18/05',fim:'24/05',fase:3,titulo:'Informática Completa',dias:[
+    {d:'Seg 18',p:'Informática',c:'Windows 10 — idioma, teclado, imagem do sistema, Painel de Controle',cl:'dp6',h:'1h'},
+    {d:'Ter 19',p:'Informática',c:'MS Excel 2016 — fórmulas (+,-,*,/,^), funções SOMA, MÉDIA, SE, atalhos',cl:'dp6',h:'1h'},
+    {d:'Qua 20',p:'Informática',c:'MS Word 2016 — estilos, pincel de formatação, ícones, índice',cl:'dp6',h:'1h'},
+    {d:'Qui 21',p:'Informática',c:'Armazenamento — unidades (KB/MB/GB/TB), cálculo de espaço',cl:'dp6',h:'1h'},
+    {d:'Sex 22',p:'IA Questões',c:'Agente IA: gere 5 questões de Informática (nível FGV)',cl:'dp6',h:'1h'},
+    {d:'Sáb 23',p:'TAF + Redação',c:'Treino físico + 1 redação (tema sorteado na plataforma)',cl:'dp4',h:'1h30'},
+  ]},
+  {num:10,ini:'25/05',fim:'31/05',fase:3,titulo:'Simulado Total + Revisão Geral',dias:[
+    {d:'Seg 25',p:'Simulado',c:'Simulado de 25 questões (todas as matérias). Anote os erros.',cl:'dp5',h:'1h'},
+    {d:'Ter 26',p:'Revisão',c:'Estude o conteúdo de cada questão que errou no simulado',cl:'dp5',h:'1h'},
+    {d:'Qua 27',p:'IA Questões',c:'Agente IA: 2 questões em cada matéria (10 questões no total)',cl:'dp6',h:'1h'},
+    {d:'Qui 28',p:'CF/88',c:'Art. 5º da CF — leia em voz alta e anote os incisos mais cobrados',cl:'dp3',h:'1h'},
+    {d:'Sex 29',p:'Redação',c:'Escreva uma redação em 45 minutos (simule condição de prova)',cl:'dp1',h:'1h'},
+    {d:'Sáb 30',p:'TAF',c:'Treino completo simulando o TAF oficial: corrida + abdominal + barra/flexão',cl:'dp4',h:'1h30'},
+  ]},
+  {num:11,ini:'01/06',fim:'07/06',fase:3,titulo:'Simulado FGV-Style + Foco nos Erros',dias:[
+    {d:'Seg 01',p:'Simulado',c:'Simulado de 30 questões misturadas. Limite: 2h30min',cl:'dp5',h:'2h30'},
+    {d:'Ter 02',p:'Revisão',c:'Estude profundamente cada questão errada. Use a IA para gerar variações.',cl:'dp5',h:'1h'},
+    {d:'Qua 03',p:'Legislação',c:'Releia a Lei 13.022/2014 completa + resolva questões específicas',cl:'dp3',h:'1h'},
+    {d:'Qui 04',p:'Português',c:'Treino final de interpretação: 5 textos jornalísticos',cl:'dp1',h:'1h'},
+    {d:'Sex 05',p:'Lógica',c:'Revisão final: 10 questões de lógica variadas',cl:'dp2',h:'1h'},
+    {d:'Sáb 06',p:'TAF + Descanso',c:'Treino físico moderado. Reserve energia.',cl:'dp4',h:'45min'},
+  ]},
+  {num:12,ini:'08/06',fim:'14/06',fase:3,titulo:'Semanas seguintes — Manutenção',dias:[
+    {d:'Seg',p:'Simulado',c:'Simulado semanal de 20 questões + revisão de erros',cl:'dp5',h:'1h'},
+    {d:'Ter',p:'IA Questões',c:'5 questões novas pelo Agente IA nas matérias mais fracas',cl:'dp6',h:'1h'},
+    {d:'Qua',p:'Legislação',c:'Revisão da lei mais cobrada da semana anterior',cl:'dp3',h:'1h'},
+    {d:'Qui',p:'Português/Lógica',c:'Manutenção: 5 questões de interpretação + 5 de lógica',cl:'dp1',h:'1h'},
+    {d:'Sex',p:'Redação',c:'1 redação cronometrada (45min) + correção pela IA',cl:'dp1',h:'1h'},
+    {d:'Sáb',p:'TAF',c:'Treino físico regular. Mantenha a consistência.',cl:'dp4',h:'1h'},
+  ]},
+];
+
+function renderPlano(){
+  const hoje=new Date();
+  const wrap=document.getElementById('semanas-wrap');wrap.innerHTML='';
+
+  SEMANAS_PLANO.forEach((sem,idx)=>{
+    const [dI,mI]=sem.ini.split('/').map(Number);
+    const [dF,mF]=sem.fim.split('/').map(Number);
+    const iniDate=new Date(2026,mI-1,dI);
+    const fimDate=new Date(2026,mF-1,dF);
+    const isCurrent=hoje>=iniDate&&hoje<=fimDate;
+    const isPast=hoje>fimDate;
+
+    const card=document.createElement('div');card.className='semana-card';
+
+    const progTag=isCurrent?'<span class="semana-prog-mini hoje-badge">📍 Semana atual</span>':
+                  isPast?'<span class="semana-prog-mini" style="background:var(--green-bg);color:var(--green)">✓ Passada</span>':'';
+    const faseColor=sem.fase===1?'#1565c0':sem.fase===2?'#e65100':'#1a7a40';
+    const faseLabel=`Fase ${sem.fase}`;
+
+    card.innerHTML=`<div class="semana-hdr${isCurrent?' current':''}" onclick="toggleSemana(this)">
+      <div class="semana-num">Semana ${sem.num}</div>
+      <div>
+        <div class="semana-title">${sem.titulo}</div>
+        <div class="semana-datas">${sem.ini} a ${sem.fim} · <span style="color:${isCurrent?'rgba(255,255,255,.7)':faseColor};font-weight:700">${faseLabel}</span></div>
+      </div>
+      ${progTag}
+      <span class="semana-chevron${isCurrent?' open':''}">▼</span>
+    </div>
+    <div class="semana-body${isCurrent?' open':''}">
+      ${sem.dias.map(d=>{
+        const isHoje=isCurrent&&d.d.toLowerCase().includes(['dom','seg','ter','qua','qui','sex','sáb'][hoje.getDay()].toLowerCase().slice(0,3));
+        return `<div class="dia-row">
+          <div class="dia-nome${isHoje?' hoje-dia':''}">${d.d}</div>
+          <span class="dia-pill ${d.cl}">${d.p}</span>
+          <div class="dia-text">${d.c}</div>
+          <div class="dia-horas">${d.h}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+    wrap.appendChild(card);
+  });
+}
+
+function toggleSemana(hdr){
+  const body=hdr.nextElementSibling;
+  const chevron=hdr.querySelector('.semana-chevron');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  chevron.classList.toggle('open',!isOpen);
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+
+// Wire nav buttons via event listeners (cross-browser reliable)
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.nb[data-section]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      goTo(btn.getAttribute('data-section'), btn);
+    });
+    // Also handle touchend for iOS/Android - prevents 300ms delay
+    btn.addEventListener('touchend', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      goTo(btn.getAttribute('data-section'), btn);
+    });
+  });
+
+  renderMat();
+  updateStats();
+  atualizarStatusKey();
+  renderQ();
+});
+</script>
+</body>
+</html>
